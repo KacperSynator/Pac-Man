@@ -45,25 +45,13 @@ public class Pacman extends Entity {
     }
 
     public void update() {
-        if (this.keys.up) {
-            this.y -= this.speed;
-            ++this.counter;
+        switch (this.keys.move_direction) {
+            case UP -> this.y -= this.speed;
+            case DOWN -> this.y += this.speed;
+            case LEFT -> this.x -= this.speed;
+            case RIGHT -> this.x += this.speed;
         }
-
-        if (this.keys.down) {
-            this.y += this.speed;
-            ++this.counter;
-        }
-
-        if (this.keys.left) {
-            this.x -= this.speed;
-            ++this.counter;
-        }
-
-        if (this.keys.right) {
-            this.x += this.speed;
-            ++this.counter;
-        }
+        ++this.counter;
 
         if (this.counter >= 6) {
             this.frameCounter = 1;
@@ -78,12 +66,10 @@ public class Pacman extends Entity {
 
     public void draw(Graphics2D element2d) {
         BufferedImage image = null;
-        if (this.frameCounter == 0) {
-            image = this.frame1;
-        }
 
-        if (this.frameCounter == 1) {
-            image = this.frame2;
+        switch (this.frameCounter) {
+            case 0 -> image = this.frame1;
+            case 1 -> image = this.frame2;
         }
 
         element2d.drawImage(image, this.x, this.y, 64, 64, null);
