@@ -25,6 +25,8 @@ public class Map extends JPanel implements Runnable {
     Treat[][] treat_map;
     Pacman pacman;
 
+    public int[][] getTileMap() { return tileManager.getMapLayout(); }
+
     public Map() {
         this.pacman = new Pacman(this, this.keys);
         this.spawnTreats();

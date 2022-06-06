@@ -24,9 +24,13 @@ public class Entity {
     public Entity() {
     }
 
+    public Point getCenter() { return new Point(position.x + Map.PIXEL / 2, position.y + Map.PIXEL / 2); }
     public Point getTile() { return new Point(position.x / Map.PIXEL, position.y / Map.PIXEL); }
     public Point getCenterTile() {
         return new Point((position.x + Map.PIXEL / 2) / Map.PIXEL, (position.y + Map.PIXEL / 2) / Map.PIXEL);
     }
-
+    public boolean isInCenter() {
+        var center = getCenter();
+        return (center.x % 32 == 0 && center.x % 64 != 0) && (center.y % 32 == 0 && center.y % 64 != 0);
+    }
 }

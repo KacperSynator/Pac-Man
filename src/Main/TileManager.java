@@ -15,6 +15,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Objects;
 import javax.imageio.ImageIO;
+import java.util.List;
+import java.util.ArrayList;
 
 public class TileManager {
     Map map;
@@ -30,6 +32,7 @@ public class TileManager {
     }
 
     public int[][] getMapLayout() { return mapLayout; }
+
 
     public void loadMapLayout() {
         try {

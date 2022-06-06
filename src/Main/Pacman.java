@@ -13,12 +13,15 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import javax.imageio.ImageIO;
 
 public class Pacman extends Entity {
     Map map;
     ControlPanel keys;
+    ControlPanel.MoveDirection move_direction = ControlPanel.MoveDirection.LEFT;
 
     public Pacman(Map map, ControlPanel keys) {
         this.keys = keys;
@@ -41,27 +44,51 @@ public class Pacman extends Entity {
         } catch (IOException var2) {
             var2.printStackTrace();
         }
+    }
 
+    public List<ControlPanel.MoveDirection> getPossibleMoveDirections(Point tile) {
+        List<ControlPanel.MoveDirection> result = new ArrayList<>();
+        if (map.getTileMap()[tile.y - 1][tile.x] == 0) result.add(ControlPanel.MoveDirection.UP);
+        if (map.getTileMap()[tile.y + 1][tile.x] == 0) result.add(ControlPanel.MoveDirection.DOWN);
+        if (map.getTileMap()[tile.y][tile.x - 1] == 0) result.add(ControlPanel.MoveDirection.LEFT);
+        if (map.getTileMap()[tile.y][tile.x + 1] == 0) result.add(ControlPanel.MoveDirection.RIGHT);
+        return result;
     }
 
     public void update() {
-        switch (this.keys.move_direction) {
-            case UP -> direction="up";
-            case DOWN -> direction="down";
-            case LEFT -> direction="left";
-            case RIGHT -> direction="right";
+
+//        switch (this.keys.move_direction) {
+//            case UP -> direction="up";
+//            case DOWN -> direction="down";
+//            case LEFT -> direction="left";
+//            case RIGHT -> direction="right";
+//        }
+//        ++this.counter;
+//        collisionDetected = false;
+//        //map.collisionPanel.collisionChecker(this);
+//        System.out.println(collisionDetected);
+//        if(!collisionDetected){
+//            switch (this.keys.move_direction) {
+//                case UP -> this.position.y -= this.speed;
+//                case DOWN -> this.position.y += this.speed;
+//                case LEFT -> this.position.x -= this.speed;
+//                case RIGHT -> this.position.x += this.speed;
+//            }
+//        }
+        var dirs =  getPossibleMoveDirections(getCenterTile());
+        if (this.move_direction != this.keys.move_direction  && dirs.size() > 2 || !dirs.contains(move_direction)) {
+            if (isInCenter() && dirs.contains(this.keys.move_direction)) {
+                this.move_direction = this.keys.move_direction;
+            }
         }
-        ++this.counter;
-        collisionDetected = false;
-        //map.collisionPanel.collisionChecker(this);
-        System.out.println(collisionDetected);
-        if(!collisionDetected){
-            switch (this.keys.move_direction) {
+        if (dirs.contains(move_direction) || !isInCenter()) {
+            switch (move_direction) {
                 case UP -> this.position.y -= this.speed;
                 case DOWN -> this.position.y += this.speed;
                 case LEFT -> this.position.x -= this.speed;
                 case RIGHT -> this.position.x += this.speed;
             }
+            ++this.counter;
         }
 
         if (this.counter >= 6) {
