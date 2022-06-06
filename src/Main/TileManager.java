@@ -26,10 +26,10 @@ public class TileManager {
         this.tile = new Tile[3];
         Objects.requireNonNull(map);
         Objects.requireNonNull(map);
-        int var10001 = 960 / 64;
+        int var10001 = Map.screen_height / Map.pixel;
         Objects.requireNonNull(map);
         Objects.requireNonNull(map);
-        this.mapLayout = new int[var10001][1600 / 64];
+        this.mapLayout = new int[var10001][Map.screen_width / Map.pixel];
         this.getTileImage();
         this.loadMapLayout();
     }
@@ -43,7 +43,7 @@ public class TileManager {
             while(true) {
                 Objects.requireNonNull(this.map);
                 Objects.requireNonNull(this.map);
-                if (i >= 960 / 64) {
+                if (i >= Map.screen_height / Map.pixel) {
                     br.close();
                     break;
                 }
@@ -55,7 +55,7 @@ public class TileManager {
                 while(true) {
                     Objects.requireNonNull(this.map);
                     Objects.requireNonNull(this.map);
-                    if (j >= 1600 / 64) {
+                    if (j >= Map.screen_width / Map.pixel) {
                         ++i;
                         break;
                     }
@@ -90,7 +90,7 @@ public class TileManager {
         while(true) {
             Objects.requireNonNull(this.map);
             Objects.requireNonNull(this.map);
-            if (i >= 960 / 64) {
+            if (i >= Map.screen_height / Map.pixel) {
                 return;
             }
 
@@ -99,7 +99,7 @@ public class TileManager {
             while(true) {
                 Objects.requireNonNull(this.map);
                 Objects.requireNonNull(this.map);
-                if (j >= 1600 / 64) {
+                if (j >= Map.screen_width / Map.pixel) {
                     ++i;
                     break;
                 }
@@ -109,29 +109,29 @@ public class TileManager {
                 int var10003;
                 if (this.mapLayout[i][j] == 1) {
                     var10001 = this.tile[0].wall;
-                    var10002 = 64 * j;
-                    var10003 = 64 * i;
+                    var10002 = Map.pixel * j;
+                    var10003 = Map.pixel * i;
                     Objects.requireNonNull(this.map);
                     Objects.requireNonNull(this.map);
-                    element2d.drawImage(var10001, var10002, var10003, 64, 64, (ImageObserver)null);
+                    element2d.drawImage(var10001, var10002, var10003, Map.pixel, Map.pixel, (ImageObserver)null);
                 }
 
                 if (this.mapLayout[i][j] == 0) {
                     var10001 = this.tile[2].wall;
-                    var10002 = 64 * j;
-                    var10003 = 64 * i;
+                    var10002 = Map.pixel * j;
+                    var10003 = Map.pixel * i;
                     Objects.requireNonNull(this.map);
                     Objects.requireNonNull(this.map);
-                    element2d.drawImage(var10001, var10002, var10003, 64, 64, (ImageObserver)null);
+                    element2d.drawImage(var10001, var10002, var10003, Map.pixel, Map.pixel, (ImageObserver)null);
                 }
 
                 if (this.mapLayout[i][j] == 2) {
                     var10001 = this.tile[1].wall;
-                    var10002 = 64 * j;
-                    var10003 = 64 * i;
+                    var10002 = Map.pixel * j;
+                    var10003 = Map.pixel * i;
                     Objects.requireNonNull(this.map);
                     Objects.requireNonNull(this.map);
-                    element2d.drawImage(var10001, var10002, var10003, 64, 64, (ImageObserver)null);
+                    element2d.drawImage(var10001, var10002, var10003, Map.pixel, Map.pixel, (ImageObserver)null);
                 }
 
                 ++j;

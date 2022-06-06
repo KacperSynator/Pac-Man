@@ -14,9 +14,9 @@ import javax.swing.JPanel;
 import Main.TileManager;
 
 public class Map extends JPanel implements Runnable {
-    public final int pixel = 64;
-    public final int screen_height = 960;
-    public final int screen_width = 1600;
+    public static final int pixel = 64;
+    public static final int screen_height = 960;
+    public static final int screen_width = 1600;
     ControlPanel keys = new ControlPanel();
     Thread gameThread;
     int playerX = 400;
@@ -27,7 +27,7 @@ public class Map extends JPanel implements Runnable {
 
     public Map() {
         this.pacman = new Pacman(this, this.keys);
-        this.setPreferredSize(new Dimension(1600, 960));
+        this.setPreferredSize(new Dimension(Map.screen_width, Map.screen_height));
         this.setBackground(Color.BLACK);
         this.setDoubleBuffered(true);
         this.addKeyListener(this.keys);
@@ -41,7 +41,7 @@ public class Map extends JPanel implements Runnable {
     }
 
     public void run() {
-        double drawInterval = 1.6666666E7;
+        double drawInterval = 1.6666666E7;  // set max 60 fps
         double delta = 0.0;
         long lastTime = System.nanoTime();
 
