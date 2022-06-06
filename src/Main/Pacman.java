@@ -17,6 +17,8 @@ import java.util.Objects;
 import javax.imageio.ImageIO;
 
 public class Pacman extends Entity {
+    static final Point START_POSITION = new Point(12 * Map.PIXEL, 11 * Map.PIXEL);
+    static final int SPEED = 4;
     Map map;
     ControlPanel keys;
 
@@ -29,9 +31,8 @@ public class Pacman extends Entity {
     }
 
     public void setDefaultValues() {
-        this.position.x = 12 * Map.pixel;
-        this.position.y = 11 * Map.pixel;
-        this.speed = 4;
+        this.position = START_POSITION;
+        this.speed = SPEED;
     }
 
     public void getPacmanImage() {
@@ -71,6 +72,6 @@ public class Pacman extends Entity {
             case 1 -> image = this.frame2;
         }
 
-        element2d.drawImage(image, this.position.x, this.position.y, 64, 64, null);
+        element2d.drawImage(image, this.position.x, this.position.y, Map.PIXEL, Map.PIXEL, null);
     }
 }

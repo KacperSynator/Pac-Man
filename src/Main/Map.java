@@ -14,20 +14,17 @@ import javax.swing.JPanel;
 import Main.TileManager;
 
 public class Map extends JPanel implements Runnable {
-    public static final int pixel = 64;
-    public static final int screen_height = 960;
-    public static final int screen_width = 1600;
+    public static final int PIXEL = 64;
+    public static final int SCREEN_HEIGHT = 960;
+    public static final int SCREEN_WIDTH = 1600;
     ControlPanel keys = new ControlPanel();
-
     Thread gameThread;
-    int pacmanX = 12;
-    int pacmanY = 11;
     TileManager tileManager = new TileManager(this);
     Pacman pacman;
 
     public Map() {
         this.pacman = new Pacman(this, this.keys);
-        this.setPreferredSize(new Dimension(Map.screen_width, Map.screen_height));
+        this.setPreferredSize(new Dimension(Map.SCREEN_WIDTH, Map.SCREEN_HEIGHT));
         this.setBackground(Color.BLACK);
         this.setDoubleBuffered(true);
         this.addKeyListener(this.keys);

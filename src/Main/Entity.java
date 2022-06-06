@@ -11,7 +11,6 @@ import java.awt.image.BufferedImage;
 import Main.Point;
 
 public class Entity {
-    public enum Type { PACMAN, GHOST, TREAT }
     Point position = new Point();
     public int speed;
     public Rectangle hitbox;
