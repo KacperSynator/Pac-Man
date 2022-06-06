@@ -29,9 +29,9 @@ public class Pacman extends Entity {
     }
 
     public void setDefaultValues() {
-        this.x = 400;
-        this.y = 400;
-        this.speed = 5;
+        this.position.x = 12 * Map.pixel;
+        this.position.y = 11 * Map.pixel;
+        this.speed = 4;
     }
 
     public void getPacmanImage() {
@@ -46,10 +46,10 @@ public class Pacman extends Entity {
 
     public void update() {
         switch (this.keys.move_direction) {
-            case UP -> this.y -= this.speed;
-            case DOWN -> this.y += this.speed;
-            case LEFT -> this.x -= this.speed;
-            case RIGHT -> this.x += this.speed;
+            case UP    -> this.position.y -= this.speed;
+            case DOWN  -> this.position.y += this.speed;
+            case LEFT  -> this.position.x -= this.speed;
+            case RIGHT -> this.position.x += this.speed;
         }
         ++this.counter;
 
@@ -61,7 +61,6 @@ public class Pacman extends Entity {
             this.frameCounter = 0;
             this.counter = 0;
         }
-
     }
 
     public void draw(Graphics2D element2d) {
@@ -72,6 +71,6 @@ public class Pacman extends Entity {
             case 1 -> image = this.frame2;
         }
 
-        element2d.drawImage(image, this.x, this.y, 64, 64, null);
+        element2d.drawImage(image, this.position.x, this.position.y, 64, 64, null);
     }
 }

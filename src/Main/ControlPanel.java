@@ -12,7 +12,6 @@ public class ControlPanel implements KeyListener {
     public enum MoveDirection { UP, DOWN, LEFT, RIGHT }
 
     public MoveDirection move_direction;
-    private boolean toggle = false;
 
     public ControlPanel() {
         move_direction = MoveDirection.LEFT;
@@ -23,10 +22,10 @@ public class ControlPanel implements KeyListener {
 
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
-            case 87 -> move_direction = MoveDirection.UP;
-            case 83 -> move_direction = MoveDirection.DOWN;
-            case 65 -> move_direction = MoveDirection.LEFT;
-            case 68 -> move_direction = MoveDirection.RIGHT;
+            case KeyEvent.VK_W, KeyEvent.VK_UP    -> move_direction = MoveDirection.UP;
+            case KeyEvent.VK_S, KeyEvent.VK_DOWN  -> move_direction = MoveDirection.DOWN;
+            case KeyEvent.VK_A, KeyEvent.VK_LEFT  -> move_direction = MoveDirection.LEFT;
+            case KeyEvent.VK_D, KeyEvent.VK_RIGHT -> move_direction = MoveDirection.RIGHT;
         }
     }
 

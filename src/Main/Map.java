@@ -18,10 +18,10 @@ public class Map extends JPanel implements Runnable {
     public static final int screen_height = 960;
     public static final int screen_width = 1600;
     ControlPanel keys = new ControlPanel();
+
     Thread gameThread;
-    int playerX = 400;
-    int playerY = 400;
-    int playerSpeed = 1;
+    int pacmanX = 12;
+    int pacmanY = 11;
     TileManager tileManager = new TileManager(this);
     Pacman pacman;
 
