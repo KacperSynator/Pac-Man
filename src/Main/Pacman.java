@@ -22,6 +22,14 @@ public class Pacman extends Entity {
     Map map;
     ControlPanel keys;
     ControlPanel.MoveDirection move_direction = ControlPanel.MoveDirection.LEFT;
+    public BufferedImage frame1up;
+    public BufferedImage frame2up;
+    public BufferedImage frame1down;
+    public BufferedImage frame2down;
+    public BufferedImage frame1right;
+    public BufferedImage frame2right;
+    public BufferedImage frame1left;
+    public BufferedImage frame2left;
 
     public Pacman(Map map, ControlPanel keys) {
         this.keys = keys;
@@ -39,8 +47,14 @@ public class Pacman extends Entity {
 
     public void getPacmanImage() {
         try {
-            this.frame1 = ImageIO.read(this.getClass().getResourceAsStream("../assets/pacman1.png"));
-            this.frame2 = ImageIO.read(this.getClass().getResourceAsStream("../assets/pacman3.png"));
+            frame1up = ImageIO.read(this.getClass().getResourceAsStream("../assets/pacman_up_1.png"));
+            frame2up = ImageIO.read(this.getClass().getResourceAsStream("../assets/pacman_up_2.png"));
+            frame1down = ImageIO.read(this.getClass().getResourceAsStream("../assets/pacman_down_1.png"));
+            frame2down = ImageIO.read(this.getClass().getResourceAsStream("../assets/pacman_down_2.png"));
+            frame1right = ImageIO.read(this.getClass().getResourceAsStream("../assets/pacman_right_1.png"));
+            frame2right = ImageIO.read(this.getClass().getResourceAsStream("../assets/pacman_right_2.png"));
+            frame1left = ImageIO.read(this.getClass().getResourceAsStream("../assets/pacman_left_1.png"));
+            frame2left = ImageIO.read(this.getClass().getResourceAsStream("../assets/pacman_left_2.png"));
         } catch (IOException var2) {
             var2.printStackTrace();
         }
@@ -83,10 +97,22 @@ public class Pacman extends Entity {
         }
         if (dirs.contains(move_direction) || !isInCenter()) {
             switch (move_direction) {
-                case UP -> this.position.y -= this.speed;
-                case DOWN -> this.position.y += this.speed;
-                case LEFT -> this.position.x -= this.speed;
-                case RIGHT -> this.position.x += this.speed;
+                case UP -> {
+                    this.position.y -= this.speed;
+                    direction = "up";
+                }
+                case DOWN -> {
+                    this.position.y += this.speed;
+                    direction = "down";
+                }
+                case LEFT -> {
+                    this.position.x -= this.speed;
+                    direction = "left";
+                }
+                case RIGHT -> {
+                    this.position.x += this.speed;
+                    direction = "right";
+                }
             }
             ++this.counter;
         }
@@ -105,11 +131,32 @@ public class Pacman extends Entity {
     public void draw(Graphics2D element2d) {
         BufferedImage image = null;
 
-        switch (this.frameCounter) {
-            case 0 -> image = this.frame1;
-            case 1 -> image = this.frame2;
+        switch (direction) {
+            case "up" -> {
+                switch (this.frameCounter) {
+                    case 0 -> image = this.frame1up;
+                    case 1 -> image = this.frame2up;
+                }
+            }
+            case "down" -> {
+                switch (this.frameCounter) {
+                    case 0 -> image = this.frame1down;
+                    case 1 -> image = this.frame2down;
+                }
+            }
+            case "left" -> {
+                switch (this.frameCounter) {
+                    case 0 -> image = this.frame1left;
+                    case 1 -> image = this.frame2left;
+                }
+            }
+            case "right" -> {
+                switch (this.frameCounter) {
+                    case 0 -> image = this.frame1right;
+                    case 1 -> image = this.frame2right;
+                }
+            }
         }
-
         element2d.drawImage(image, this.position.x, this.position.y, 64, 64, null);
     }
 }
