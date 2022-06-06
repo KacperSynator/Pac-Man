@@ -8,9 +8,10 @@ package Main;
 import java.awt.image.BufferedImage;
 
 public class Tile {
-    public BufferedImage wall;
+    public BufferedImage img;
     public boolean collision = true;
 
-    public Tile() {
+    public Tile(BufferedImage img_) {
+        img = img_;
     }
 }

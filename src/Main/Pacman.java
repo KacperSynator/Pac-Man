@@ -23,10 +23,7 @@ public class Pacman extends Entity {
     public Pacman(Map map, ControlPanel keys) {
         this.keys = keys;
         this.map = map;
-        Objects.requireNonNull(map);
-        int var10005 = 0 * 64;
-        Objects.requireNonNull(map);
-        this.hitbox = new Rectangle(16, 32, var10005, 0 * 64);
+        this.hitbox = new Rectangle(16, 32, 0, 0);
         this.setDefaultValues();
         this.getPacmanImage();
     }
@@ -39,8 +36,8 @@ public class Pacman extends Entity {
 
     public void getPacmanImage() {
         try {
-            this.frame1 = ImageIO.read((InputStream)Objects.requireNonNull(this.getClass().getResourceAsStream("../assets/pacman1.png")));
-            this.frame2 = ImageIO.read((InputStream)Objects.requireNonNull(this.getClass().getResourceAsStream("../assets/pacman3.png")));
+            this.frame1 = ImageIO.read(this.getClass().getResourceAsStream("../assets/pacman1.png"));
+            this.frame2 = ImageIO.read(this.getClass().getResourceAsStream("../assets/pacman3.png"));
         } catch (IOException var2) {
             var2.printStackTrace();
         }
@@ -89,6 +86,6 @@ public class Pacman extends Entity {
             image = this.frame2;
         }
 
-        element2d.drawImage(image, this.x, this.y, 64, 64, (ImageObserver)null);
+        element2d.drawImage(image, this.x, this.y, 64, 64, null);
     }
 }
