@@ -10,9 +10,12 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.lang.reflect.Array;
 import java.util.Arrays;
 import javax.swing.JPanel;
 import Main.TileManager;
+import java.util.List;
+import java.util.ArrayList;
 
 public class Map extends JPanel implements Runnable {
     public static final int PIXEL = 64;
@@ -23,12 +26,14 @@ public class Map extends JPanel implements Runnable {
     Thread gameThread;
     TileManager tileManager = new TileManager(this);
     Treat[][] treat_map;
+    List<Ghost> ghosts;
     Pacman pacman;
 
     public int[][] getTileMap() { return tileManager.getMapLayout(); }
 
     public Map() {
         this.pacman = new Pacman(this, this.keys);
+        this.spawnGhosts();
         this.spawnTreats();
         this.setPreferredSize(new Dimension(Map.SCREEN_WIDTH, Map.SCREEN_HEIGHT));
         this.setBackground(Color.BLACK);
@@ -38,7 +43,14 @@ public class Map extends JPanel implements Runnable {
         this.requestFocusInWindow();
     }
 
-    public void spawnTreats() {
+    void spawnGhosts() {
+        ghosts = new ArrayList<>();
+        ghosts.add( new Ghost(this, Ghost.Personality.BLINKY));
+        ghosts.add( new Ghost(this, Ghost.Personality.INKY));
+        ghosts.add( new Ghost(this, Ghost.Personality.CLYDE));
+    }
+
+    void spawnTreats() {
         var tile_map = tileManager.getMapLayout();
         treat_map = new Treat[Map.SCREEN_HEIGHT / Map.PIXEL][Map.SCREEN_WIDTH / Map.PIXEL];
         for (int i = 0; i < Map.SCREEN_HEIGHT / Map.PIXEL; ++i) {
@@ -91,8 +103,16 @@ public class Map extends JPanel implements Runnable {
         this.tileManager.draw(element2d);
         this.paintTreats(element2d);
         this.pacman.draw(element2d);
+        this.paintGhosts(element2d);
         element2d.dispose();
     }
+
+    void paintGhosts(Graphics2D element2d) {
+        for (var ghost : ghosts) {
+            ghost.draw(element2d);
+        }
+    }
+
 
     void paintTreats(Graphics2D element2d) {
         for (int i = 0; i < Map.SCREEN_HEIGHT / Map.PIXEL; ++i) {
