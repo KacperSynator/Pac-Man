@@ -11,7 +11,7 @@ import java.awt.image.BufferedImage;
 import Main.Point;
 
 public class Entity {
-    Point position = new Point();
+    public Point position = new Point();
     public int speed;
     public Rectangle hitbox;
     public boolean collisionDetected = false;
@@ -21,6 +21,11 @@ public class Entity {
     int counter = 0;
 
     public Entity() {
+    }
+
+    public Point getTile() { return new Point(position.x / Map.PIXEL, position.y / Map.PIXEL); }
+    public Point getCenterTile() {
+        return new Point((position.x + Map.PIXEL / 2) / Map.PIXEL, (position.y + Map.PIXEL / 2) / Map.PIXEL);
     }
 
 }

@@ -29,6 +29,8 @@ public class TileManager {
         this.loadMapLayout();
     }
 
+    public int[][] getMapLayout() { return mapLayout; }
+
     public void loadMapLayout() {
         try {
             Objects.requireNonNull(this.map);
@@ -59,7 +61,6 @@ public class TileManager {
         } catch (IOException var2) {
             var2.printStackTrace();
         }
-
     }
 
     public void draw(Graphics2D element2d) {
