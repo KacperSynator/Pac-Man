@@ -17,22 +17,21 @@ import java.util.Objects;
 import javax.imageio.ImageIO;
 
 public class Pacman extends Entity {
-    static final Point START_POSITION = new Point(12 * Map.PIXEL, 11 * Map.PIXEL);
-    static final int SPEED = 4;
     Map map;
     ControlPanel keys;
 
     public Pacman(Map map, ControlPanel keys) {
         this.keys = keys;
         this.map = map;
-        this.hitbox = new Rectangle(16, 32, 0, 0);
+        this.hitbox = new Rectangle(0,0,map.PIXEL,map.PIXEL);
         this.setDefaultValues();
         this.getPacmanImage();
     }
 
     public void setDefaultValues() {
-        this.position = START_POSITION;
-        this.speed = SPEED;
+        this.position.x = 12* Map.PIXEL;
+        this.position.y = 11* Map.PIXEL;
+        this.speed = 4;
     }
 
     public void getPacmanImage() {
@@ -47,12 +46,23 @@ public class Pacman extends Entity {
 
     public void update() {
         switch (this.keys.move_direction) {
-            case UP    -> this.position.y -= this.speed;
-            case DOWN  -> this.position.y += this.speed;
-            case LEFT  -> this.position.x -= this.speed;
-            case RIGHT -> this.position.x += this.speed;
+            case UP -> direction="up";
+            case DOWN -> direction="down";
+            case LEFT -> direction="left";
+            case RIGHT -> direction="right";
         }
         ++this.counter;
+        collisionDetected = false;
+        //map.collisionPanel.collisionChecker(this);
+        System.out.println(collisionDetected);
+        if(!collisionDetected){
+            switch (this.keys.move_direction) {
+                case UP -> this.position.y -= this.speed;
+                case DOWN -> this.position.y += this.speed;
+                case LEFT -> this.position.x -= this.speed;
+                case RIGHT -> this.position.x += this.speed;
+            }
+        }
 
         if (this.counter >= 6) {
             this.frameCounter = 1;
@@ -62,6 +72,7 @@ public class Pacman extends Entity {
             this.frameCounter = 0;
             this.counter = 0;
         }
+
     }
 
     public void draw(Graphics2D element2d) {
@@ -72,6 +83,6 @@ public class Pacman extends Entity {
             case 1 -> image = this.frame2;
         }
 
-        element2d.drawImage(image, this.position.x, this.position.y, Map.PIXEL, Map.PIXEL, null);
+        element2d.drawImage(image, this.position.x, this.position.y, 64, 64, null);
     }
 }

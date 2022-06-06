@@ -15,6 +15,7 @@ public class Entity {
     public int speed;
     public Rectangle hitbox;
     public boolean collisionDetected = false;
+    String direction;
     public BufferedImage frame1;
     public BufferedImage frame2;
     int frameCounter = 0;

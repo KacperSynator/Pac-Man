@@ -5,7 +5,7 @@
 
 package Main;
 
-import javax.swing.JFrame;
+import javax.swing.*;
 
 public class Main {
     public Main() {
@@ -13,7 +13,7 @@ public class Main {
 
     public static void main(String[] args) {
         JFrame window = new JFrame();
-        window.setDefaultCloseOperation(3);
+        window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         window.setResizable(false);
         window.setTitle("Test");
         window.setVisible(true);
