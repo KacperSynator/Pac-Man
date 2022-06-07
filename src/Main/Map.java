@@ -12,6 +12,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.Arrays;
@@ -36,6 +37,9 @@ public class Map extends JPanel implements Runnable {
     Pacman pacman;
     int total_treat_amount = 0;
     int current_treat_amount =0;
+    int lives = 3;
+    BufferedImage heart;
+
     //JLabel score = new JLabel("Score: ");
 
     public int[][] getTileMap() { return tileManager.getMapLayout(); }
@@ -51,6 +55,11 @@ public class Map extends JPanel implements Runnable {
         this.addKeyListener(this.keys);
         this.setFocusable(true);
         this.requestFocusInWindow();
+        try {
+            heart = ImageIO.read(this.getClass().getResourceAsStream("../assets/heart.png"));
+        } catch (IOException var2) {
+            var2.printStackTrace();
+        }
     }
 
     void loadFont() {
@@ -132,7 +141,11 @@ public class Map extends JPanel implements Runnable {
         this.paintGhosts(element2d);
         element2d.setColor(Color.white);
         element2d.setFont(font);
-        element2d.drawString("Score: " + 10 * (total_treat_amount-current_treat_amount),1400,935);
+        element2d.drawString("Score: " + 10 * (total_treat_amount-current_treat_amount),1370,935);
+        for(int i=0;i<lives;i++)
+        {
+            element2d.drawImage(heart, 1260+i*PIXEL/2, 910, Map.PIXEL/2, Map.PIXEL/2, null);
+        }
         element2d.dispose();
     }
 
