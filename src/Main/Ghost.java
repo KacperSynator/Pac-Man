@@ -11,26 +11,23 @@ import javax.swing.Timer;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-public class Ghost extends Entity implements Runnable {
+public class Ghost extends MovingEntity implements Runnable {
     public enum Personality {BLINKY, INKY, CLYDE}
     public enum MovementMode {CHASE, SCATTER}
     static MovementMode movement_mode = MovementMode.SCATTER;
     static Personality mimic_personality = Personality.BLINKY;
-
+    static final int movement_mode_delay = 5000;
+    static final int mimic_mode_delay = 3000;
     Thread ghost_thread;
-    ControlPanel.MoveDirection move_direction = ControlPanel.MoveDirection.UP;
     Personality personality;
-    int speed = 4;
-    Map map;
-
-    static public Timer movement_mode_timer = new Timer(5000, e -> {
+    static public Timer movement_mode_timer = new Timer(movement_mode_delay, e -> {
         switch (movement_mode) {
             case SCATTER -> movement_mode = MovementMode.CHASE;
             case CHASE -> movement_mode = MovementMode.SCATTER;
         }
     });
 
-    static public Timer mimic_mode_timer = new Timer(3000, e -> {
+    static public Timer mimic_mode_timer = new Timer(mimic_mode_delay, e -> {
         switch (mimic_personality) {
             case BLINKY -> mimic_personality = Personality.INKY;
             case INKY -> mimic_personality = Personality.BLINKY;
@@ -42,6 +39,7 @@ public class Ghost extends Entity implements Runnable {
     public Ghost(Map map, Personality personality) {
         this.map = map;
         this.personality = personality;
+        this.move_direction = ControlPanel.MoveDirection.UP;
         this.getGhostImage();
         this.setPostion();
     }
@@ -94,15 +92,6 @@ public class Ghost extends Entity implements Runnable {
                 --delta;
             }
         }
-    }
-
-    java.util.List<ControlPanel.MoveDirection> getPossibleMoveDirections(Point tile) {
-        List<ControlPanel.MoveDirection> result = new ArrayList<>();
-        if (map.getTileMap()[tile.y - 1][tile.x] == 0) result.add(ControlPanel.MoveDirection.UP);
-        if (map.getTileMap()[tile.y + 1][tile.x] == 0) result.add(ControlPanel.MoveDirection.DOWN);
-        if (map.getTileMap()[tile.y][tile.x - 1] == 0) result.add(ControlPanel.MoveDirection.LEFT);
-        if (map.getTileMap()[tile.y][tile.x + 1] == 0) result.add(ControlPanel.MoveDirection.RIGHT);
-        return result;
     }
 
     double calculateDistance(Point a, Point b) {

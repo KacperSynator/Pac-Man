@@ -13,7 +13,6 @@ public class Treat extends Entity {
 
     public Treat(Map map, Point position) {
         this.map = map;
-        this.hitbox = new Rectangle(16, 32, 0, 0);
         this.position = new Point(position.x + Map.PIXEL / 4, position.y + Map.PIXEL / 4);
         this.getImage();
     }
@@ -30,4 +29,13 @@ public class Treat extends Entity {
     public void draw(Graphics2D element2d) {
         element2d.drawImage(frame1, this.position.x, this.position.y, Map.PIXEL / 2, Map.PIXEL / 2, null);
     }
+
+    @Override
+    public Point getCenter() { return new Point(position.x + Map.PIXEL / 4, position.y + Map.PIXEL / 4); }
+
+    @Override
+    public Point getCenterTile() {
+        return new Point((position.x + Map.PIXEL / 4) / Map.PIXEL, (position.y + Map.PIXEL / 4) / Map.PIXEL);
+    }
+
 }

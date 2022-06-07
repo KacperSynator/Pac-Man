@@ -11,11 +11,8 @@ import java.awt.image.BufferedImage;
 import Main.Point;
 
 public class Entity {
+    Map map;
     public Point position = new Point();
-    public int speed;
-    public Rectangle hitbox;
-    public boolean collisionDetected = false;
-    String direction;
     public BufferedImage frame1;
     public BufferedImage frame2;
     int frameCounter = 0;

@@ -25,7 +25,6 @@ public class Map extends JPanel implements Runnable {
     public static final int SCREEN_HEIGHT = 960;
     public static final int SCREEN_WIDTH = 1600;
     ControlPanel keys = new ControlPanel();
-    public CollisionPanel collisionPanel = new CollisionPanel(this);
     Font font;
     Thread gameThread;
     TileManager tileManager = new TileManager(this);

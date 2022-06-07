@@ -13,10 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.imageio.ImageIO;
 
-public class Pacman extends Entity {
-    Map map;
+public class Pacman extends MovingEntity {
     ControlPanel keys;
-    public ControlPanel.MoveDirection move_direction = ControlPanel.MoveDirection.LEFT;
     public BufferedImage frame1up;
     public BufferedImage frame2up;
     public BufferedImage frame1down;
@@ -29,15 +27,9 @@ public class Pacman extends Entity {
     public Pacman(Map map, ControlPanel keys) {
         this.keys = keys;
         this.map = map;
-        this.hitbox = new Rectangle(0,0,map.PIXEL,map.PIXEL);
-        this.setDefaultValues();
+        this.move_direction = ControlPanel.MoveDirection.LEFT;
+        this.position = new Point(12 * Map.PIXEL, 11 * Map.PIXEL);
         this.getPacmanImage();
-    }
-
-    public void setDefaultValues() {
-        this.position.x = 12* Map.PIXEL;
-        this.position.y = 11* Map.PIXEL;
-        this.speed = 4;
     }
 
     public void getPacmanImage() {
@@ -55,14 +47,6 @@ public class Pacman extends Entity {
         }
     }
 
-    List<ControlPanel.MoveDirection> getPossibleMoveDirections(Point tile) {
-        List<ControlPanel.MoveDirection> result = new ArrayList<>();
-        if (map.getTileMap()[tile.y - 1][tile.x] == 0) result.add(ControlPanel.MoveDirection.UP);
-        if (map.getTileMap()[tile.y + 1][tile.x] == 0) result.add(ControlPanel.MoveDirection.DOWN);
-        if (map.getTileMap()[tile.y][tile.x - 1] == 0) result.add(ControlPanel.MoveDirection.LEFT);
-        if (map.getTileMap()[tile.y][tile.x + 1] == 0) result.add(ControlPanel.MoveDirection.RIGHT);
-        return result;
-    }
 
     public void update() {
 
