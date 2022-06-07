@@ -12,7 +12,6 @@ public class ControlPanel implements KeyListener {
     public enum MoveDirection { UP, DOWN, LEFT, RIGHT }
 
     public MoveDirection move_direction;
-    public MoveDirection next_move_direction;
 
     public ControlPanel() {
         move_direction = MoveDirection.LEFT;

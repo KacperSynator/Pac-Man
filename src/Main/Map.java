@@ -144,6 +144,7 @@ public class Map extends JPanel implements Runnable {
         this.pacman.draw(element2d);
         this.paintGhosts(element2d);
         this.user_interface.paintInterfaceInGame(element2d);
+        user_interface.gameOverScreen(element2d);
         element2d.dispose();
     }
 
@@ -163,12 +164,11 @@ public class Map extends JPanel implements Runnable {
         }
     }
 
-    void resetMap()
-    {
+    void resetMap() {
+        for (var ghost : ghosts) ghost.stopGhostThread();
         lives--;
         pacman = new Pacman(this,this.keys);
         ghosts.clear();
         spawnGhosts();
     }
-
 }

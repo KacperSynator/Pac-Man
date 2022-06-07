@@ -16,18 +16,18 @@ public class Ghost extends MovingEntity implements Runnable {
     public enum MovementMode {CHASE, SCATTER}
     static MovementMode movement_mode = MovementMode.SCATTER;
     static Personality mimic_personality = Personality.BLINKY;
-    static final int movement_mode_delay = 5000;
-    static final int mimic_mode_delay = 3000;
+    static final int MOVEMENT_MODE_DELAY = 5000;
+    static final int MIMIC_MODE_DELAY = 3000;
     Thread ghost_thread;
     Personality personality;
-    static public Timer movement_mode_timer = new Timer(movement_mode_delay, e -> {
+    static public Timer movement_mode_timer = new Timer(MOVEMENT_MODE_DELAY, e -> {
         switch (movement_mode) {
             case SCATTER -> movement_mode = MovementMode.CHASE;
             case CHASE -> movement_mode = MovementMode.SCATTER;
         }
     });
 
-    static public Timer mimic_mode_timer = new Timer(mimic_mode_delay, e -> {
+    static public Timer mimic_mode_timer = new Timer(MIMIC_MODE_DELAY, e -> {
         switch (mimic_personality) {
             case BLINKY -> mimic_personality = Personality.INKY;
             case INKY -> mimic_personality = Personality.PINKY;

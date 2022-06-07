@@ -7,25 +7,33 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.net.URL;
 
-public class UserInterface implements ActionListener {
+public class UserInterface extends JPanel implements ActionListener {
 
     BufferedImage heart;
-    BufferedImage game_over_background;
     JButton reset = new JButton();
     JButton quit = new JButton();
-
     Map map;
+    Image game_over_gif;
+    Font game_over_font;
     UserInterface(Map map){
         this.map = map;
+        game_over_gif = Toolkit.getDefaultToolkit().createImage(System.getProperty("user.dir") + "/src/assets/userInterface/game_over.gif");
+        loadFont();
         try {
-            heart = ImageIO.read(this.getClass().getResourceAsStream("../assets/heart.png"));
+            heart = ImageIO.read(this.getClass().getResourceAsStream("../userInterface/heart.png"));
         } catch (IOException var2) {
             var2.printStackTrace();
         }
+    }
+
+    void loadFont () {
         try {
-            game_over_background = ImageIO.read(this.getClass().getResourceAsStream("../assets/userInterface/game_over_screen.png"));
-        } catch (IOException var2) {
+            // "../assets/fonts/android-insomnia/and_ins_reg.ttf" // "../assets/fonts/games/Games.ttf"
+            game_over_font = Font.createFont(Font.TRUETYPE_FONT, this.getClass().getResourceAsStream("../fonts/games/Games.ttf"));
+            game_over_font = game_over_font.deriveFont(72.0f);
+        } catch (Exception var2) {
             var2.printStackTrace();
         }
     }
@@ -42,10 +50,13 @@ public class UserInterface implements ActionListener {
 
     void gameOverScreen(Graphics2D element2d)
     {
-        element2d.drawImage(game_over_background, 0, 0, Map.SCREEN_WIDTH, Map.SCREEN_HEIGHT, null);
-        element2d.setColor(Color.white);
+        super.paintComponent(element2d);
+        element2d.drawImage(game_over_gif, Map.SCREEN_WIDTH / 4, Map.SCREEN_HEIGHT / 4, Map.SCREEN_WIDTH / 2,Map.SCREEN_HEIGHT / 2 ,null);
         element2d.setFont(map.font);
-        element2d.drawString("YOUR SCORE: "+ Map.TREAT_SCORE* map.score,Map.SCREEN_WIDTH/2-200,Map.SCREEN_HEIGHT/2);
+        element2d.drawString("YOUR SCORE: " + map.score,Map.SCREEN_WIDTH / 2 - 140,Map.SCREEN_HEIGHT / 2 + 230);
+        element2d.setFont(game_over_font);
+        element2d.drawString("GAME OVER",Map.SCREEN_WIDTH / 2 - 190,Map.SCREEN_HEIGHT / 2 + 190);
+
         reset.setBounds(200,100,100,50);
         reset.addActionListener(this);
         map.add(reset);
