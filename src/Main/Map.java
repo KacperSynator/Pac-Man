@@ -5,20 +5,13 @@
 
 package Main;
 
-import Main.Pacman;
-
 import java.awt.*;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.io.IOException;
-import java.lang.reflect.Array;
-import java.util.Arrays;
-import javax.imageio.ImageIO;
 import javax.swing.*;
 
-import Main.TileManager;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -56,7 +49,7 @@ public class Map extends JPanel implements Runnable {
     void loadFont() {
         try {
             // "../assets/fonts/android-insomnia/and_ins_reg.ttf" // "../assets/fonts/games/Games.ttf"
-            font = Font.createFont(Font.TRUETYPE_FONT, this.getClass().getResourceAsStream("../assets/fonts/games/Games.ttf"));
+            font = Font.createFont(Font.TRUETYPE_FONT, this.getClass().getResourceAsStream("../fonts/games/Games.ttf"));
             font = font.deriveFont(36.0f);
         } catch (Exception var2) {
             var2.printStackTrace();

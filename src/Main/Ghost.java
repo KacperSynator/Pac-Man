@@ -35,16 +35,16 @@ public class Ghost extends Entity {
         try {
             switch (personality) {
                 case BLINKY -> {
-                    this.frame1 = ImageIO.read(this.getClass().getResourceAsStream("../assets/purple_ghost_1.png"));
-                    this.frame2 = ImageIO.read(this.getClass().getResourceAsStream("../assets/purple_ghost_2.png"));
+                    this.frame1 = ImageIO.read(this.getClass().getResourceAsStream("../ghosts/purple_ghost_1.png"));
+                    this.frame2 = ImageIO.read(this.getClass().getResourceAsStream("../ghosts/purple_ghost_2.png"));
                 }
                 case INKY -> {
-                    this.frame1 = ImageIO.read(this.getClass().getResourceAsStream("../assets/blue_ghost_1.png"));
-                    this.frame2 = ImageIO.read(this.getClass().getResourceAsStream("../assets/blue_ghost_2.png"));
+                    this.frame1 = ImageIO.read(this.getClass().getResourceAsStream("../ghosts/blue_ghost_1.png"));
+                    this.frame2 = ImageIO.read(this.getClass().getResourceAsStream("../ghosts/blue_ghost_2.png"));
                 }
                 case CLYDE -> {
-                    this.frame1 = ImageIO.read(this.getClass().getResourceAsStream("../assets/green_ghost_1.png"));
-                    this.frame2 = ImageIO.read(this.getClass().getResourceAsStream("../assets/green_ghost_2.png"));
+                    this.frame1 = ImageIO.read(this.getClass().getResourceAsStream("../ghosts/green_ghost_1.png"));
+                    this.frame2 = ImageIO.read(this.getClass().getResourceAsStream("../ghosts/green_ghost_2.png"));
                 }
             }
         } catch (IOException var2) {
@@ -61,10 +61,10 @@ public class Ghost extends Entity {
         return result;
     }
 
-
     double calculateDistance(Point a, Point b) {
         return Math.sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y));
     }
+
     void updateMoveDirection() {
         switch (personality) {
             case INKY -> moveToTile(map.pacman.getTile());
