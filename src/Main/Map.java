@@ -24,6 +24,7 @@ public class Map extends JPanel implements Runnable {
     public static final int PIXEL = 64;
     public static final int SCREEN_HEIGHT = 960;
     public static final int SCREEN_WIDTH = 1600;
+    static final int TREAT_SCORE = 10;
     ControlPanel keys = new ControlPanel();
     Font font;
     Thread gameThread;
@@ -31,8 +32,8 @@ public class Map extends JPanel implements Runnable {
     Treat[][] treat_map;
     List<Ghost> ghosts;
     Pacman pacman;
-    int total_treat_amount = 0;
-    int current_treat_amount = 0;
+    int score = 0;
+    int treat_amount = 0;
     int lives = 3;
     UserInterface user_interface = new UserInterface(this);
 
@@ -81,8 +82,7 @@ public class Map extends JPanel implements Runnable {
             for (int j = 0; j < Map.SCREEN_WIDTH / Map.PIXEL; ++j) {
                 if (tile_map[i][j] == 0) {
                     treat_map[i][j] = new Treat(this, new Point(j * PIXEL, i * PIXEL));
-                    total_treat_amount++;
-                    current_treat_amount++;
+                    treat_amount++;
                 }
             }
         }
@@ -113,22 +113,23 @@ public class Map extends JPanel implements Runnable {
 
     public void update() {
         this.pacman.update();
-        this.eatTreat();
-        checkCollision();
+        this.eatTreat() ;
+        if (treat_amount == 0) System.out.println("Game Won");
+        if (checkCollision())  resetMap();
     }
 
     void eatTreat() {
         var pacman_tile = pacman.getCenterTile();
         if (treat_map[pacman_tile.y][pacman_tile.x] != null) {
             treat_map[pacman_tile.y][pacman_tile.x] = null;
-            current_treat_amount--;
+            --treat_amount;
+            score += TREAT_SCORE;
         }
     }
 
     boolean checkCollision() {
         for (var ghost : ghosts) {
             if (ghost.getCenterTile().x == pacman.getCenterTile().x && ghost.getCenterTile().y == pacman.getCenterTile().y) {
-                System.out.println("Game Over");
                 return true;
             }
         }
@@ -152,7 +153,6 @@ public class Map extends JPanel implements Runnable {
         }
     }
 
-
     void paintTreats(Graphics2D element2d) {
         for (int i = 0; i < Map.SCREEN_HEIGHT / Map.PIXEL; ++i) {
             for (int j = 0; j < Map.SCREEN_WIDTH / Map.PIXEL; ++j) {
@@ -164,12 +164,12 @@ public class Map extends JPanel implements Runnable {
     }
     void resetMap()
     {
+        for (var ghost : ghosts) ghost.stopGhostThread();
         pacman = new Pacman(this,this.keys);
         ghosts.clear();
         spawnGhosts();
         lives--;
-        if(lives == 0)
-        {
+        if(lives == 0) {
             //gameoverscreen
         }
     }

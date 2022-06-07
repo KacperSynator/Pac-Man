@@ -28,7 +28,7 @@ public class UserInterface {
     {
         element2d.setColor(Color.white);
         element2d.setFont(map.font);
-        element2d.drawString("Score: " + 10 * (map.total_treat_amount-map.current_treat_amount),1370,935);
+        element2d.drawString("Score: " + map.score, 1370, 935);
         for(int i=0;i<map.lives;i++)
         {
             element2d.drawImage(heart, 1260+i*Map.PIXEL/2, 910, Map.PIXEL/2, Map.PIXEL/2, null);
@@ -40,6 +40,6 @@ public class UserInterface {
         element2d.drawImage(game_over_screen, 0, 0, Map.SCREEN_WIDTH, Map.SCREEN_HEIGHT, null);
         element2d.setColor(Color.white);
         element2d.setFont(map.font);
-        element2d.drawString("YOUR SCORE: "+10 * (map.total_treat_amount-map.current_treat_amount),Map.SCREEN_WIDTH/2-200,Map.SCREEN_HEIGHT/2);
+        element2d.drawString("YOUR SCORE: " + map.score,Map.SCREEN_WIDTH/2-200,Map.SCREEN_HEIGHT/2);
     }
 }

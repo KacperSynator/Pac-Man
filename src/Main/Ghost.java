@@ -84,6 +84,10 @@ public class Ghost extends MovingEntity implements Runnable {
         this.ghost_thread.start();
     }
 
+    public void stopGhostThread() {
+        this.ghost_thread = null;
+    }
+
     public void run() {
         double drawInterval = 1.6666666E7;  // set max 60 fps
         double delta = 0.0;
@@ -144,7 +148,7 @@ public class Ghost extends MovingEntity implements Runnable {
             if (ghost.personality == Personality.BLINKY)
                 blinky_tile = ghost.getCenterTile();
 
-        Point target_tile = new Point(2 * (ambush_tile.x - blinky_tile.x), 2 * (ambush_tile.y -blinky_tile.y));
+        Point target_tile = new Point(2 * (ambush_tile.x - blinky_tile.x), 2 * (ambush_tile.y - blinky_tile.y));
         moveToTile(target_tile);
     }
 
