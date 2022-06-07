@@ -7,7 +7,10 @@ import java.io.IOException;
 
 public class Ghost extends Entity {
     public enum Personality {BLINKY, INKY, CLYDE}
+
+    ControlPanel.MoveDirection move_direction = ControlPanel.MoveDirection.UP;
     Personality personality;
+    int speed = 4;
     Map map;
 
     public Ghost(Map map, Personality personality) {
@@ -43,6 +46,25 @@ public class Ghost extends Entity {
             }
         } catch (IOException var2) {
             var2.printStackTrace();
+        }
+    }
+
+    public void update() {
+        switch (this.move_direction) {
+            case UP -> this.position.y -= this.speed;
+            case DOWN -> this.position.y += this.speed;
+            case LEFT -> this.position.x -= this.speed;
+            case RIGHT -> this.position.x += this.speed;
+        }
+        ++this.counter;
+
+        if (this.counter >= 6) {
+            this.frameCounter = 1;
+        }
+
+        if (this.counter >= 12) {
+            this.frameCounter = 0;
+            this.counter = 0;
         }
     }
 

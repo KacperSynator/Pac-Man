@@ -79,22 +79,10 @@ public class Pacman extends Entity {
         }
         if (dirs.contains(move_direction) || !isInCenter()) {
             switch (move_direction) {
-                case UP -> {
-                    this.position.y -= this.speed;
-                    direction = "up";
-                }
-                case DOWN -> {
-                    this.position.y += this.speed;
-                    direction = "down";
-                }
-                case LEFT -> {
-                    this.position.x -= this.speed;
-                    direction = "left";
-                }
-                case RIGHT -> {
-                    this.position.x += this.speed;
-                    direction = "right";
-                }
+                case UP -> this.position.y -= this.speed;
+                case DOWN -> this.position.y += this.speed;
+                case LEFT -> this.position.x -= this.speed;
+                case RIGHT -> this.position.x += this.speed;
             }
             ++this.counter;
         }
@@ -107,32 +95,31 @@ public class Pacman extends Entity {
             this.frameCounter = 0;
             this.counter = 0;
         }
-
     }
 
     public void draw(Graphics2D element2d) {
         BufferedImage image = null;
 
-        switch (direction) {
-            case "up" -> {
+        switch (this.move_direction) {
+            case UP -> {
                 switch (this.frameCounter) {
                     case 0 -> image = this.frame1up;
                     case 1 -> image = this.frame2up;
                 }
             }
-            case "down" -> {
+            case DOWN -> {
                 switch (this.frameCounter) {
                     case 0 -> image = this.frame1down;
                     case 1 -> image = this.frame2down;
                 }
             }
-            case "left" -> {
+            case LEFT -> {
                 switch (this.frameCounter) {
                     case 0 -> image = this.frame1left;
                     case 1 -> image = this.frame2left;
                 }
             }
-            case "right" -> {
+            case RIGHT -> {
                 switch (this.frameCounter) {
                     case 0 -> image = this.frame1right;
                     case 1 -> image = this.frame2right;

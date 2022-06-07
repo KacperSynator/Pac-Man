@@ -7,3 +7,4 @@
 <a href="https://www.flaticon.com/free-icons/spiral" title="spiral icons">Spiral icons created by Freepik - Flaticon</a>
 <a href="https://www.flaticon.com/free-icons/popsicle" title="popsicle icons">Popsicle icons created by Freepik - Flaticon</a>
 <a href="https://www.flaticon.com/free-icons/lollipop" title="lollipop icons">Lollipop icons created by Smashicons - Flaticon</a>
+<a href="https://www.flaticon.com/free-icons/boundary" title="boundary icons">Boundary icons created by Khoirul Huda - Flaticon</a>

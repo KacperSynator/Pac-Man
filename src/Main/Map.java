@@ -96,6 +96,9 @@ public class Map extends JPanel implements Runnable {
     public void update() {
         this.pacman.update();
         this.eatTreat();
+        for (var ghost : ghosts) {
+            ghost.update();
+        }
     }
 
     void eatTreat() {
