@@ -71,24 +71,6 @@ public class Pacman extends Entity {
 
     public void update() {
 
-//        switch (this.keys.move_direction) {
-//            case UP -> direction="up";
-//            case DOWN -> direction="down";
-//            case LEFT -> direction="left";
-//            case RIGHT -> direction="right";
-//        }
-//        ++this.counter;
-//        collisionDetected = false;
-//        //map.collisionPanel.collisionChecker(this);
-//        System.out.println(collisionDetected);
-//        if(!collisionDetected){
-//            switch (this.keys.move_direction) {
-//                case UP -> this.position.y -= this.speed;
-//                case DOWN -> this.position.y += this.speed;
-//                case LEFT -> this.position.x -= this.speed;
-//                case RIGHT -> this.position.x += this.speed;
-//            }
-//        }
         var dirs =  getPossibleMoveDirections(getCenterTile());
         if (this.move_direction != this.keys.move_direction  && dirs.size() > 2 || !dirs.contains(move_direction)) {
             if (isInCenter() && dirs.contains(this.keys.move_direction)) {
@@ -157,6 +139,6 @@ public class Pacman extends Entity {
                 }
             }
         }
-        element2d.drawImage(image, this.position.x, this.position.y, 64, 64, null);
+        element2d.drawImage(image, this.position.x, this.position.y, Map.PIXEL, Map.PIXEL, null);
     }
 }
