@@ -36,8 +36,7 @@ public class Map extends JPanel implements Runnable {
     int current_treat_amount =0;
     int lives = 3;
     BufferedImage heart;
-
-    //JLabel score = new JLabel("Score: ");
+    BufferedImage game_over_screen;
 
     public int[][] getTileMap() { return tileManager.getMapLayout(); }
 
@@ -54,6 +53,11 @@ public class Map extends JPanel implements Runnable {
         this.requestFocusInWindow();
         try {
             heart = ImageIO.read(this.getClass().getResourceAsStream("../assets/heart.png"));
+        } catch (IOException var2) {
+            var2.printStackTrace();
+        }
+        try {
+            game_over_screen = ImageIO.read(this.getClass().getResourceAsStream("../assets/userInterface/game_over_screen.png"));
         } catch (IOException var2) {
             var2.printStackTrace();
         }
@@ -156,6 +160,10 @@ public class Map extends JPanel implements Runnable {
         {
             element2d.drawImage(heart, 1260+i*PIXEL/2, 910, Map.PIXEL/2, Map.PIXEL/2, null);
         }
+        if(current_treat_amount < 150)
+        {
+            gameOverScreen(element);
+        }
         element2d.dispose();
     }
 
@@ -175,7 +183,21 @@ public class Map extends JPanel implements Runnable {
             }
         }
     }
-    void printScore(){
-
+    void resetMap()
+    {
+        pacman = new Pacman(this,this.keys);
+        ghosts.clear();
+        spawnGhosts();
+        lives--;
     }
+    void gameOverScreen(Graphics element)
+    {
+        super.paintComponent(element);
+        Graphics2D element2d = (Graphics2D)element;
+        element2d.drawImage(game_over_screen, 0, 0, Map.SCREEN_WIDTH, Map.SCREEN_HEIGHT, null);
+        element2d.setColor(Color.white);
+        element2d.setFont(font);
+        element2d.drawString("YOUR SCORE: "+10 * (total_treat_amount-current_treat_amount),Map.SCREEN_WIDTH/2-200,Map.SCREEN_HEIGHT/2);
+    }
+
 }
