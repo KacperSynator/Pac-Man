@@ -76,6 +76,9 @@ public class Map extends JPanel implements Runnable {
         ghosts.add( new Ghost(this, Ghost.Personality.CLYDE));
         Ghost.movement_mode_timer.start();
         Ghost.mimic_mode_timer.start();
+        for (var ghost : ghosts) {
+            ghost.startGhostThread();
+        }
     }
 
     void spawnTreats() {
@@ -118,9 +121,6 @@ public class Map extends JPanel implements Runnable {
     public void update() {
         this.pacman.update();
         this.eatTreat();
-        for (var ghost : ghosts) {
-            ghost.update();
-        }
         checkCollision();
     }
 

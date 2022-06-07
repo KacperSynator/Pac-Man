@@ -11,11 +11,13 @@ import javax.swing.Timer;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-public class Ghost extends Entity {
+public class Ghost extends Entity implements Runnable {
     public enum Personality {BLINKY, INKY, CLYDE}
     public enum MovementMode {CHASE, SCATTER}
     static MovementMode movement_mode = MovementMode.SCATTER;
     static Personality mimic_personality = Personality.BLINKY;
+
+    Thread ghost_thread;
     ControlPanel.MoveDirection move_direction = ControlPanel.MoveDirection.UP;
     Personality personality;
     int speed = 4;
@@ -70,6 +72,27 @@ public class Ghost extends Entity {
             }
         } catch (IOException var2) {
             var2.printStackTrace();
+        }
+    }
+
+    public void startGhostThread() {
+        this.ghost_thread = new Thread(this);
+        this.ghost_thread.start();
+    }
+
+    public void run() {
+        double drawInterval = 1.6666666E7;  // set max 60 fps
+        double delta = 0.0;
+        long lastTime = System.nanoTime();
+
+        while (this.ghost_thread != null) {
+            long currentTime = System.nanoTime();
+            delta += (double)(currentTime - lastTime) / drawInterval;
+            lastTime = currentTime;
+            if (delta >= 1.0) {
+                this.update();
+                --delta;
+            }
         }
     }
 
