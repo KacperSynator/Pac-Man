@@ -21,19 +21,17 @@ public class Ghost extends Entity {
     int speed = 4;
     Map map;
 
-    static public Timer movement_mode_timer = new Timer(8000, e -> {
+    static public Timer movement_mode_timer = new Timer(5000, e -> {
         switch (movement_mode) {
             case SCATTER -> movement_mode = MovementMode.CHASE;
             case CHASE -> movement_mode = MovementMode.SCATTER;
         }
     });
 
-    static public Timer mimic_mode_timer = new Timer(5000, new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-            switch (mimic_personality) {
-                case BLINKY -> mimic_personality = Personality.INKY;
-                case INKY -> mimic_personality = Personality.BLINKY;
-            }
+    static public Timer mimic_mode_timer = new Timer(3000, e -> {
+        switch (mimic_personality) {
+            case BLINKY -> mimic_personality = Personality.INKY;
+            case INKY -> mimic_personality = Personality.BLINKY;
         }
     });
 
@@ -113,7 +111,6 @@ public class Ghost extends Entity {
             case INKY -> moveToTile(map.pacman.getCenterTile());
             case BLINKY -> ambushPacman();
         }
-
     }
 
     void chase() {

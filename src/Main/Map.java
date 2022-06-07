@@ -121,6 +121,7 @@ public class Map extends JPanel implements Runnable {
         for (var ghost : ghosts) {
             ghost.update();
         }
+        checkCollision();
     }
 
     void eatTreat() {
@@ -129,6 +130,16 @@ public class Map extends JPanel implements Runnable {
             treat_map[pacman_tile.y][pacman_tile.x] = null;
             current_treat_amount--;
         }
+    }
+
+    boolean checkCollision() {
+        for (var ghost : ghosts) {
+            if (ghost.getCenterTile().x == pacman.getCenterTile().x && ghost.getCenterTile().y == pacman.getCenterTile().y) {
+                System.out.println("Game Over");
+                return true;
+            }
+        }
+        return false;
     }
 
     public void paintComponent(Graphics element) {
