@@ -12,8 +12,10 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.Arrays;
+import javax.imageio.ImageIO;
 import javax.swing.*;
 
 import Main.TileManager;
@@ -26,6 +28,7 @@ public class Map extends JPanel implements Runnable {
     public static final int SCREEN_WIDTH = 1600;
     ControlPanel keys = new ControlPanel();
     public CollisionPanel collisionPanel = new CollisionPanel(this);
+    Font font;
     Thread gameThread;
     TileManager tileManager = new TileManager(this);
     Treat[][] treat_map;
@@ -41,12 +44,23 @@ public class Map extends JPanel implements Runnable {
         this.pacman = new Pacman(this, this.keys);
         this.spawnGhosts();
         this.spawnTreats();
+        this.loadFont();
         this.setPreferredSize(new Dimension(Map.SCREEN_WIDTH, Map.SCREEN_HEIGHT));
         this.setBackground(Color.BLACK);
         this.setDoubleBuffered(true);
         this.addKeyListener(this.keys);
         this.setFocusable(true);
         this.requestFocusInWindow();
+    }
+
+    void loadFont() {
+        try {
+            // "../assets/fonts/android-insomnia/and_ins_reg.ttf" // "../assets/fonts/games/Games.ttf"
+            font = Font.createFont(Font.TRUETYPE_FONT, this.getClass().getResourceAsStream("../assets/fonts/games/Games.ttf"));
+            font = font.deriveFont(36.0f);
+        } catch (Exception var2) {
+            var2.printStackTrace();
+        }
     }
 
     void spawnGhosts() {
@@ -117,8 +131,8 @@ public class Map extends JPanel implements Runnable {
         this.pacman.draw(element2d);
         this.paintGhosts(element2d);
         element2d.setColor(Color.white);
-        element2d.setFont(new Font("Arial",Font.BOLD,35));
-        element2d.drawString("Score: " + 10*(total_treat_amount-current_treat_amount),1400,935);
+        element2d.setFont(font);
+        element2d.drawString("Score: " + 10 * (total_treat_amount-current_treat_amount),1400,935);
         element2d.dispose();
     }
 
