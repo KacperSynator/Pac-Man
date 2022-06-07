@@ -74,6 +74,8 @@ public class Map extends JPanel implements Runnable {
         ghosts.add( new Ghost(this, Ghost.Personality.BLINKY));
         ghosts.add( new Ghost(this, Ghost.Personality.INKY));
         ghosts.add( new Ghost(this, Ghost.Personality.CLYDE));
+        Ghost.movement_mode_timer.start();
+        Ghost.mimic_mode_timer.start();
     }
 
     void spawnTreats() {

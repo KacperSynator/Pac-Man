@@ -7,15 +7,37 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.lang.Math;
+import javax.swing.Timer;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class Ghost extends Entity {
     public enum Personality {BLINKY, INKY, CLYDE}
     public enum MovementMode {CHASE, SCATTER}
-    public MovementMode movement_mode = MovementMode.SCATTER;
+    static MovementMode movement_mode = MovementMode.SCATTER;
+    static Personality mimic_personality = Personality.BLINKY;
     ControlPanel.MoveDirection move_direction = ControlPanel.MoveDirection.UP;
     Personality personality;
     int speed = 4;
     Map map;
+
+    static public Timer movement_mode_timer = new Timer(8000, e -> {
+        switch (movement_mode) {
+            case SCATTER -> movement_mode = MovementMode.CHASE;
+            case CHASE -> movement_mode = MovementMode.SCATTER;
+        }
+    });
+
+    static public Timer mimic_mode_timer = new Timer(5000, new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+            switch (mimic_personality) {
+                case BLINKY -> mimic_personality = Personality.INKY;
+                case INKY -> mimic_personality = Personality.BLINKY;
+            }
+        }
+    });
+
+
 
     public Ghost(Map map, Personality personality) {
         this.map = map;
@@ -87,12 +109,11 @@ public class Ghost extends Entity {
     }
 
     void mimicOther() {
-        var now_s = System.currentTimeMillis() / 1000;
-        if (now_s % 10 < 5) {
-            moveToTile(map.pacman.getCenterTile());
-        } else {
-            ambushPacman();
+        switch (mimic_personality) {
+            case INKY -> moveToTile(map.pacman.getCenterTile());
+            case BLINKY -> ambushPacman();
         }
+
     }
 
     void chase() {
