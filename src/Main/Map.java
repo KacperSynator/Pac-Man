@@ -6,12 +6,11 @@
 package Main;
 
 import Main.Pacman;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+
+import java.awt.*;
 import java.util.Arrays;
-import javax.swing.JPanel;
+import javax.swing.*;
+
 import Main.TileManager;
 
 public class Map extends JPanel implements Runnable {
@@ -24,6 +23,9 @@ public class Map extends JPanel implements Runnable {
     TileManager tileManager = new TileManager(this);
     Treat[][] treat_map;
     Pacman pacman;
+    int total_treat_amount = 0;
+    int current_treat_amount =0;
+    //JLabel score = new JLabel("Score: ");
 
     public int[][] getTileMap() { return tileManager.getMapLayout(); }
 
@@ -45,6 +47,8 @@ public class Map extends JPanel implements Runnable {
             for (int j = 0; j < Map.SCREEN_WIDTH / Map.PIXEL; ++j) {
                 if (tile_map[i][j] == 0) {
                     treat_map[i][j] = new Treat(this, new Point(j * PIXEL, i * PIXEL));
+                    total_treat_amount++;
+                    current_treat_amount++;
                 }
             }
         }
@@ -76,12 +80,14 @@ public class Map extends JPanel implements Runnable {
     public void update() {
         this.pacman.update();
         this.eatTreat();
+        //System.out.println(current_treat_amount);
     }
 
     void eatTreat() {
         var pacman_tile = pacman.getCenterTile();
         if (treat_map[pacman_tile.y][pacman_tile.x] != null) {
             treat_map[pacman_tile.y][pacman_tile.x] = null;
+            current_treat_amount--;
         }
     }
 
@@ -91,6 +97,9 @@ public class Map extends JPanel implements Runnable {
         this.tileManager.draw(element2d);
         this.paintTreats(element2d);
         this.pacman.draw(element2d);
+        element2d.setColor(Color.white);
+        element2d.setFont(new Font("Arial",Font.BOLD,35));
+        element2d.drawString("Score: " + 10*(total_treat_amount-current_treat_amount),1400,935);
         element2d.dispose();
     }
 
@@ -102,5 +111,8 @@ public class Map extends JPanel implements Runnable {
                 }
             }
         }
+    }
+    void printScore(){
+
     }
 }
