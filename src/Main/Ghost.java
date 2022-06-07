@@ -10,7 +10,8 @@ import java.lang.Math;
 
 public class Ghost extends Entity {
     public enum Personality {BLINKY, INKY, CLYDE}
-
+    public enum MovementMode {CHASE, SCATTER}
+    public MovementMode movement_mode = MovementMode.SCATTER;
     ControlPanel.MoveDirection move_direction = ControlPanel.MoveDirection.UP;
     Personality personality;
     int speed = 4;
@@ -65,11 +66,47 @@ public class Ghost extends Entity {
         return Math.sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y));
     }
 
-    void updateMoveDirection() {
+    void scatter() {
         switch (personality) {
-            case INKY -> moveToTile(map.pacman.getTile());
-            case BLINKY -> moveToTile(new Point(1, 14));
-            case CLYDE -> moveToTile(new Point(20, 14));
+            case INKY -> moveToTile(new Point(24, 0));
+            case BLINKY -> moveToTile(new Point(0, 14));
+            case CLYDE -> moveToTile(new Point(24, 14));
+        }
+    }
+
+    void ambushPacman() {
+        final int tiles_ahead = 2;
+        var target_tile = map.pacman.getCenterTile();
+        switch (map.pacman.move_direction) {
+            case UP -> target_tile.y -= tiles_ahead;
+            case DOWN -> target_tile.y += tiles_ahead;
+            case RIGHT -> target_tile.x += tiles_ahead;
+            case LEFT -> target_tile.x -= tiles_ahead;
+        }
+        moveToTile(target_tile);
+    }
+
+    void mimicOther() {
+        var now_s = System.currentTimeMillis() / 1000;
+        if (now_s % 10 < 5) {
+            moveToTile(map.pacman.getCenterTile());
+        } else {
+            ambushPacman();
+        }
+    }
+
+    void chase() {
+        switch (personality) {
+            case INKY -> moveToTile(map.pacman.getCenterTile());
+            case BLINKY -> ambushPacman();
+            case CLYDE -> mimicOther();
+        }
+    }
+
+    void updateMoveDirection() {
+        switch (movement_mode) {
+            case SCATTER -> scatter();
+            case CHASE -> chase();
         }
     }
 

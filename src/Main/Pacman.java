@@ -16,7 +16,7 @@ import javax.imageio.ImageIO;
 public class Pacman extends Entity {
     Map map;
     ControlPanel keys;
-    ControlPanel.MoveDirection move_direction = ControlPanel.MoveDirection.LEFT;
+    public ControlPanel.MoveDirection move_direction = ControlPanel.MoveDirection.LEFT;
     public BufferedImage frame1up;
     public BufferedImage frame2up;
     public BufferedImage frame1down;
