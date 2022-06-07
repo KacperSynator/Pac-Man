@@ -1,14 +1,19 @@
 package Main;
 
 import javax.imageio.ImageIO;
+import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
-public class UserInterface {
+public class UserInterface implements ActionListener {
 
     BufferedImage heart;
-    BufferedImage game_over_screen;
+    BufferedImage game_over_background;
+    JButton reset = new JButton();
+    JButton quit = new JButton();
 
     Map map;
     UserInterface(Map map){
@@ -19,7 +24,7 @@ public class UserInterface {
             var2.printStackTrace();
         }
         try {
-            game_over_screen = ImageIO.read(this.getClass().getResourceAsStream("../assets/userInterface/game_over_screen.png"));
+            game_over_background = ImageIO.read(this.getClass().getResourceAsStream("../assets/userInterface/game_over_screen.png"));
         } catch (IOException var2) {
             var2.printStackTrace();
         }
@@ -37,9 +42,20 @@ public class UserInterface {
 
     void gameOverScreen(Graphics2D element2d)
     {
-        element2d.drawImage(game_over_screen, 0, 0, Map.SCREEN_WIDTH, Map.SCREEN_HEIGHT, null);
+        element2d.drawImage(game_over_background, 0, 0, Map.SCREEN_WIDTH, Map.SCREEN_HEIGHT, null);
         element2d.setColor(Color.white);
         element2d.setFont(map.font);
-        element2d.drawString("YOUR SCORE: " + map.score,Map.SCREEN_WIDTH/2-200,Map.SCREEN_HEIGHT/2);
+        element2d.drawString("YOUR SCORE: "+ Map.TREAT_SCORE* map.score,Map.SCREEN_WIDTH/2-200,Map.SCREEN_HEIGHT/2);
+        reset.setBounds(200,100,100,50);
+        reset.addActionListener(this);
+        map.add(reset);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if(e.getSource() == reset)
+        {
+
+        }
     }
 }

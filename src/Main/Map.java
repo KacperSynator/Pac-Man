@@ -162,16 +162,13 @@ public class Map extends JPanel implements Runnable {
             }
         }
     }
+
     void resetMap()
     {
-        for (var ghost : ghosts) ghost.stopGhostThread();
+        lives--;
         pacman = new Pacman(this,this.keys);
         ghosts.clear();
         spawnGhosts();
-        lives--;
-        if(lives == 0) {
-            //gameoverscreen
-        }
     }
 
 }
