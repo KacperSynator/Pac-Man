@@ -4,6 +4,9 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.lang.Math;
 
 public class Ghost extends Entity {
     public enum Personality {BLINKY, INKY, CLYDE}
@@ -49,7 +52,45 @@ public class Ghost extends Entity {
         }
     }
 
+    java.util.List<ControlPanel.MoveDirection> getPossibleMoveDirections(Point tile) {
+        List<ControlPanel.MoveDirection> result = new ArrayList<>();
+        if (map.getTileMap()[tile.y - 1][tile.x] == 0) result.add(ControlPanel.MoveDirection.UP);
+        if (map.getTileMap()[tile.y + 1][tile.x] == 0) result.add(ControlPanel.MoveDirection.DOWN);
+        if (map.getTileMap()[tile.y][tile.x - 1] == 0) result.add(ControlPanel.MoveDirection.LEFT);
+        if (map.getTileMap()[tile.y][tile.x + 1] == 0) result.add(ControlPanel.MoveDirection.RIGHT);
+        return result;
+    }
+
+
+    double calculateDistance(Point a, Point b) {
+        return Math.sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y));
+    }
+    void updateMoveDirection() {
+        Point pacman_pos = map.pacman.getCenterTile();
+        Point current_pos = getCenterTile();
+        var dirs =  getPossibleMoveDirections(getCenterTile());
+        ControlPanel.MoveDirection best_dir = null;
+        double min_dist = Double.MAX_VALUE;
+        for (var dir : dirs) {
+            Point next_tile = current_pos;
+            switch (dir) {
+                case UP -> next_tile.y -= 1;
+                case DOWN -> next_tile.y += 1;
+                case LEFT -> next_tile.x -= 1;
+                case RIGHT -> next_tile.x += 1;
+            }
+            var dist = calculateDistance(pacman_pos, next_tile);
+            if (min_dist >= dist) {
+                min_dist = dist;
+                best_dir = dir;
+            }
+        }
+        if (best_dir != null)  move_direction = best_dir;
+    }
+
     public void update() {
+        if (isInCenter()) updateMoveDirection();
+
         switch (this.move_direction) {
             case UP -> this.position.y -= this.speed;
             case DOWN -> this.position.y += this.speed;

@@ -60,7 +60,7 @@ public class Pacman extends Entity {
         }
     }
 
-    public List<ControlPanel.MoveDirection> getPossibleMoveDirections(Point tile) {
+    List<ControlPanel.MoveDirection> getPossibleMoveDirections(Point tile) {
         List<ControlPanel.MoveDirection> result = new ArrayList<>();
         if (map.getTileMap()[tile.y - 1][tile.x] == 0) result.add(ControlPanel.MoveDirection.UP);
         if (map.getTileMap()[tile.y + 1][tile.x] == 0) result.add(ControlPanel.MoveDirection.DOWN);
