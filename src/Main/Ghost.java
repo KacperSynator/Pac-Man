@@ -25,9 +25,9 @@ public class Ghost extends Entity {
 
     void setPostion() {
         switch (personality) {
-            case BLINKY -> position = new Point(12 * Map.PIXEL, 7 * Map.PIXEL);
-            case INKY -> position = new Point(13 * Map.PIXEL, 7 * Map.PIXEL);
-            case CLYDE -> position = new Point(14 * Map.PIXEL, 7 * Map.PIXEL);
+            case BLINKY -> position = new Point(12 * Map.PIXEL, 6 * Map.PIXEL);
+            case INKY -> position = new Point(13 * Map.PIXEL, 6 * Map.PIXEL);
+            case CLYDE -> position = new Point(14 * Map.PIXEL, 6 * Map.PIXEL);
         }
     }
 
@@ -66,9 +66,27 @@ public class Ghost extends Entity {
         return Math.sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y));
     }
     void updateMoveDirection() {
-        Point pacman_pos = map.pacman.getCenterTile();
+        switch (personality) {
+            case INKY -> moveToTile(map.pacman.getTile());
+            case BLINKY -> moveToTile(new Point(1, 14));
+            case CLYDE -> moveToTile(new Point(20, 14));
+        }
+    }
+
+    void removeBackDir(List<ControlPanel.MoveDirection> dirs) {
+        if (dirs.size() == 1) return;
+        switch (move_direction) {
+            case UP -> dirs.remove(ControlPanel.MoveDirection.DOWN);
+            case DOWN -> dirs.remove(ControlPanel.MoveDirection.UP);
+            case RIGHT -> dirs.remove(ControlPanel.MoveDirection.LEFT);
+            case LEFT -> dirs.remove(ControlPanel.MoveDirection.RIGHT);
+        }
+    }
+
+    void moveToTile(Point tile) {
         Point current_pos = getCenterTile();
         var dirs =  getPossibleMoveDirections(getCenterTile());
+        removeBackDir(dirs);
         ControlPanel.MoveDirection best_dir = null;
         double min_dist = Double.MAX_VALUE;
         for (var dir : dirs) {
@@ -79,7 +97,7 @@ public class Ghost extends Entity {
                 case LEFT -> next_tile.x -= 1;
                 case RIGHT -> next_tile.x += 1;
             }
-            var dist = calculateDistance(pacman_pos, next_tile);
+            var dist = calculateDistance(tile, next_tile);
             if (min_dist >= dist) {
                 min_dist = dist;
                 best_dir = dir;
