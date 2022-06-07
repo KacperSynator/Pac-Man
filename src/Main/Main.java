@@ -15,7 +15,7 @@ public class Main {
         JFrame window = new JFrame();
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         window.setResizable(false);
-        window.setTitle("Test");
+        window.setTitle("Pacman 2D game");
         window.setVisible(true);
         Map map = new Map();
         window.add(map);
