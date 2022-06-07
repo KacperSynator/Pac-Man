@@ -2,14 +2,13 @@ package Main;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.awt.Graphics2D;
 import java.io.IOException;
 import java.util.Random;
 
 public class Treat extends Entity {
-    static final String[] TREAT_FILES = { "../assets/candy_1.png", "../assets/candy_2.png", "../assets/candy_3.png",
-                                          "../assets/candy_4.png" };
+    static final String[] TREAT_FILES = {"../treats/candy_1.png", "../treats/candy_2.png", "../treats/candy_3.png",
+            "../treats/candy_4.png"};
     Map map;
 
     public Treat(Map map, Point position) {

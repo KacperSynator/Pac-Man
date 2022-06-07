@@ -5,18 +5,12 @@
 
 package Main;
 
-import Main.Map;
 import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
-import java.awt.image.ImageObserver;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Objects;
 import javax.imageio.ImageIO;
-import java.util.List;
-import java.util.ArrayList;
 
 public class TileManager {
     Map map;
@@ -39,7 +33,7 @@ public class TileManager {
             Objects.requireNonNull(this.map);
             BufferedReader br = new BufferedReader (
                                     new InputStreamReader (
-                                            this.getClass().getResourceAsStream("../assets/pacman_mapa.txt")
+                                            this.getClass().getResourceAsStream("../map/pacman_mapa.txt")
                                     ));
 
             for (int i = 0; i < Map.SCREEN_HEIGHT / Map.PIXEL; ++i) {
@@ -58,9 +52,9 @@ public class TileManager {
 
     public void getTileImage() {
         try {
-            this.tile[0] = new Tile(ImageIO.read(this.getClass().getResourceAsStream("../assets/floor.png")));
-            this.tile[1] = new Tile(ImageIO.read(this.getClass().getResourceAsStream("../assets/Wall2.png")));
-            this.tile[2] = new Tile(ImageIO.read(this.getClass().getResourceAsStream("../assets/floor2.png")));
+            this.tile[0] = new Tile(ImageIO.read(this.getClass().getResourceAsStream("../map/floor.png")));
+            this.tile[1] = new Tile(ImageIO.read(this.getClass().getResourceAsStream("../map/Wall2.png")));
+            this.tile[2] = new Tile(ImageIO.read(this.getClass().getResourceAsStream("../map/floor2.png")));
         } catch (IOException var2) {
             var2.printStackTrace();
         }

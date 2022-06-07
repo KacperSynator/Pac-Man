@@ -5,17 +5,12 @@
 
 package Main;
 
-import Main.ControlPanel;
-import Main.Map;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
-import java.awt.image.ImageObserver;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import javax.imageio.ImageIO;
 
 public class Pacman extends Entity {
@@ -47,14 +42,14 @@ public class Pacman extends Entity {
 
     public void getPacmanImage() {
         try {
-            frame1up = ImageIO.read(this.getClass().getResourceAsStream("../assets/pacman_up_1.png"));
-            frame2up = ImageIO.read(this.getClass().getResourceAsStream("../assets/pacman_up_2.png"));
-            frame1down = ImageIO.read(this.getClass().getResourceAsStream("../assets/pacman_down_1.png"));
-            frame2down = ImageIO.read(this.getClass().getResourceAsStream("../assets/pacman_down_2.png"));
-            frame1right = ImageIO.read(this.getClass().getResourceAsStream("../assets/pacman_right_1.png"));
-            frame2right = ImageIO.read(this.getClass().getResourceAsStream("../assets/pacman_right_2.png"));
-            frame1left = ImageIO.read(this.getClass().getResourceAsStream("../assets/pacman_left_1.png"));
-            frame2left = ImageIO.read(this.getClass().getResourceAsStream("../assets/pacman_left_2.png"));
+            frame1up = ImageIO.read(this.getClass().getResourceAsStream("../pacman/pacman_up_1.png"));
+            frame2up = ImageIO.read(this.getClass().getResourceAsStream("../pacman/pacman_up_2.png"));
+            frame1down = ImageIO.read(this.getClass().getResourceAsStream("../pacman/pacman_down_1.png"));
+            frame2down = ImageIO.read(this.getClass().getResourceAsStream("../pacman/pacman_down_2.png"));
+            frame1right = ImageIO.read(this.getClass().getResourceAsStream("../pacman/pacman_right_1.png"));
+            frame2right = ImageIO.read(this.getClass().getResourceAsStream("../pacman/pacman_right_2.png"));
+            frame1left = ImageIO.read(this.getClass().getResourceAsStream("../pacman/pacman_left_1.png"));
+            frame2left = ImageIO.read(this.getClass().getResourceAsStream("../pacman/pacman_left_2.png"));
         } catch (IOException var2) {
             var2.printStackTrace();
         }
