@@ -33,10 +33,9 @@ public class Map extends JPanel implements Runnable {
     List<Ghost> ghosts;
     Pacman pacman;
     int total_treat_amount = 0;
-    int current_treat_amount =0;
+    int current_treat_amount = 0;
     int lives = 3;
-    BufferedImage heart;
-    BufferedImage game_over_screen;
+    UserInterface user_interface = new UserInterface(this);
 
     public int[][] getTileMap() { return tileManager.getMapLayout(); }
 
@@ -51,16 +50,6 @@ public class Map extends JPanel implements Runnable {
         this.addKeyListener(this.keys);
         this.setFocusable(true);
         this.requestFocusInWindow();
-        try {
-            heart = ImageIO.read(this.getClass().getResourceAsStream("../assets/heart.png"));
-        } catch (IOException var2) {
-            var2.printStackTrace();
-        }
-        try {
-            game_over_screen = ImageIO.read(this.getClass().getResourceAsStream("../assets/userInterface/game_over_screen.png"));
-        } catch (IOException var2) {
-            var2.printStackTrace();
-        }
     }
 
     void loadFont() {
@@ -153,17 +142,7 @@ public class Map extends JPanel implements Runnable {
         this.paintTreats(element2d);
         this.pacman.draw(element2d);
         this.paintGhosts(element2d);
-        element2d.setColor(Color.white);
-        element2d.setFont(font);
-        element2d.drawString("Score: " + 10 * (total_treat_amount-current_treat_amount),1370,935);
-        for(int i=0;i<lives;i++)
-        {
-            element2d.drawImage(heart, 1260+i*PIXEL/2, 910, Map.PIXEL/2, Map.PIXEL/2, null);
-        }
-        if(current_treat_amount < 150)
-        {
-            gameOverScreen(element);
-        }
+        this.user_interface.paintInterfaceInGame(element2d);
         element2d.dispose();
     }
 
@@ -189,15 +168,10 @@ public class Map extends JPanel implements Runnable {
         ghosts.clear();
         spawnGhosts();
         lives--;
-    }
-    void gameOverScreen(Graphics element)
-    {
-        super.paintComponent(element);
-        Graphics2D element2d = (Graphics2D)element;
-        element2d.drawImage(game_over_screen, 0, 0, Map.SCREEN_WIDTH, Map.SCREEN_HEIGHT, null);
-        element2d.setColor(Color.white);
-        element2d.setFont(font);
-        element2d.drawString("YOUR SCORE: "+10 * (total_treat_amount-current_treat_amount),Map.SCREEN_WIDTH/2-200,Map.SCREEN_HEIGHT/2);
+        if(lives == 0)
+        {
+            //gameoverscreen
+        }
     }
 
 }
