@@ -12,7 +12,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 public class Ghost extends MovingEntity implements Runnable {
-    public enum Personality {BLINKY, INKY, CLYDE}
+    public enum Personality {BLINKY, INKY, PINKY, CLYDE}
     public enum MovementMode {CHASE, SCATTER}
     static MovementMode movement_mode = MovementMode.SCATTER;
     static Personality mimic_personality = Personality.BLINKY;
@@ -30,7 +30,8 @@ public class Ghost extends MovingEntity implements Runnable {
     static public Timer mimic_mode_timer = new Timer(mimic_mode_delay, e -> {
         switch (mimic_personality) {
             case BLINKY -> mimic_personality = Personality.INKY;
-            case INKY -> mimic_personality = Personality.BLINKY;
+            case INKY -> mimic_personality = Personality.PINKY;
+            case PINKY -> mimic_personality = Personality.BLINKY;
         }
     });
 
@@ -49,6 +50,7 @@ public class Ghost extends MovingEntity implements Runnable {
             case BLINKY -> position = new Point(12 * Map.PIXEL, 6 * Map.PIXEL);
             case INKY -> position = new Point(13 * Map.PIXEL, 6 * Map.PIXEL);
             case CLYDE -> position = new Point(14 * Map.PIXEL, 6 * Map.PIXEL);
+            case PINKY -> position = new Point(11 * Map.PIXEL, 6 * Map.PIXEL);
         }
     }
 
@@ -66,6 +68,10 @@ public class Ghost extends MovingEntity implements Runnable {
                 case CLYDE -> {
                     this.frame1 = ImageIO.read(this.getClass().getResourceAsStream("../ghosts/green_ghost_1.png"));
                     this.frame2 = ImageIO.read(this.getClass().getResourceAsStream("../ghosts/green_ghost_2.png"));
+                }
+                case PINKY -> {
+                    this.frame1 = ImageIO.read(this.getClass().getResourceAsStream("../ghosts/pink_ghost_1.png"));
+                    this.frame2 = ImageIO.read(this.getClass().getResourceAsStream("../ghosts/pink_ghost_2.png"));
                 }
             }
         } catch (IOException var2) {
@@ -103,10 +109,11 @@ public class Ghost extends MovingEntity implements Runnable {
             case INKY -> moveToTile(new Point(24, 0));
             case BLINKY -> moveToTile(new Point(0, 14));
             case CLYDE -> moveToTile(new Point(24, 14));
+            case PINKY -> moveToTile(new Point(0, 0));
         }
     }
 
-    void ambushPacman() {
+    Point calculateAmbushTile() {
         final int tiles_ahead = 2;
         var target_tile = map.pacman.getCenterTile();
         switch (map.pacman.move_direction) {
@@ -115,20 +122,37 @@ public class Ghost extends MovingEntity implements Runnable {
             case RIGHT -> target_tile.x += tiles_ahead;
             case LEFT -> target_tile.x -= tiles_ahead;
         }
-        moveToTile(target_tile);
+        return target_tile;
+    }
+
+    void ambushPacman() {
+        moveToTile(calculateAmbushTile());
     }
 
     void mimicOther() {
         switch (mimic_personality) {
-            case INKY -> moveToTile(map.pacman.getCenterTile());
-            case BLINKY -> ambushPacman();
+            case BLINKY -> moveToTile(map.pacman.getCenterTile());
+            case PINKY -> ambushPacman();
+            case INKY -> whimsicalStrategy();
         }
+    }
+
+    void whimsicalStrategy() {
+        var ambush_tile = calculateAmbushTile();
+        Point blinky_tile = null;
+        for (var ghost : map.ghosts)
+            if (ghost.personality == Personality.BLINKY)
+                blinky_tile = ghost.getCenterTile();
+
+        Point target_tile = new Point(2 * (ambush_tile.x - blinky_tile.x), 2 * (ambush_tile.y -blinky_tile.y));
+        moveToTile(target_tile);
     }
 
     void chase() {
         switch (personality) {
-            case INKY -> moveToTile(map.pacman.getCenterTile());
-            case BLINKY -> ambushPacman();
+            case BLINKY -> moveToTile(map.pacman.getCenterTile());
+            case PINKY -> ambushPacman();
+            case INKY -> whimsicalStrategy();
             case CLYDE -> mimicOther();
         }
     }
