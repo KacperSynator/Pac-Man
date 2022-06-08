@@ -98,7 +98,7 @@ public class Ghost extends MovingEntity implements Runnable {
             delta += (double)(currentTime - lastTime) / drawInterval;
             lastTime = currentTime;
             if (delta >= 1.0) {
-                this.update();
+                if (map.update) this.update();
                 --delta;
             }
         }

@@ -25,6 +25,9 @@ public class Map extends JPanel implements Runnable {
     public static final int SCREEN_HEIGHT = 960;
     public static final int SCREEN_WIDTH = 1600;
     static final int TREAT_SCORE = 10;
+    static final int START_DELAY = 2000;
+    public boolean update = false;
+    public boolean game_over = false;
     ControlPanel keys = new ControlPanel();
     Font font;
     Thread gameThread;
@@ -36,6 +39,8 @@ public class Map extends JPanel implements Runnable {
     int treat_amount = 0;
     int lives = 3;
     UserInterface user_interface = new UserInterface(this);
+
+    public Timer start_delay_timer = new Timer(START_DELAY, e -> update = true);
 
     public int[][] getTileMap() { return tileManager.getMapLayout(); }
 
@@ -91,6 +96,7 @@ public class Map extends JPanel implements Runnable {
     public void startGameThread() {
         this.gameThread = new Thread(this);
         this.gameThread.start();
+
     }
 
     public void run() {
@@ -98,12 +104,14 @@ public class Map extends JPanel implements Runnable {
         double delta = 0.0;
         long lastTime = System.nanoTime();
 
+        this.start_delay_timer.start();
+
         while(this.gameThread != null) {
             long currentTime = System.nanoTime();
             delta += (double)(currentTime - lastTime) / drawInterval;
             lastTime = currentTime;
             if (delta >= 1.0) {
-                this.update();
+                if (update) this.update();
                 this.repaint();
                 this.requestFocusInWindow();
                 --delta;
@@ -113,7 +121,7 @@ public class Map extends JPanel implements Runnable {
 
     public void update() {
         this.pacman.update();
-        this.eatTreat() ;
+        this.eatTreat();
         if (treat_amount == 0) System.out.println("Game Won");
         if (checkCollision())  resetMap();
     }
@@ -144,7 +152,7 @@ public class Map extends JPanel implements Runnable {
         this.pacman.draw(element2d);
         this.paintGhosts(element2d);
         this.user_interface.paintInterfaceInGame(element2d);
-        user_interface.gameOverScreen(element2d);
+        if (game_over) user_interface.gameOverScreen(element2d);
         element2d.dispose();
     }
 
@@ -165,10 +173,16 @@ public class Map extends JPanel implements Runnable {
     }
 
     void resetMap() {
+        start_delay_timer.stop();
+        this.update = false;
         for (var ghost : ghosts) ghost.stopGhostThread();
-        lives--;
+        if (--lives <= 0) {
+            game_over = true;
+            return;
+        }
         pacman = new Pacman(this,this.keys);
         ghosts.clear();
         spawnGhosts();
+        start_delay_timer.start();
     }
 }
