@@ -15,11 +15,17 @@ public class Main {
         JFrame window = new JFrame();
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         window.setResizable(false);
-        window.setTitle("Pacman 2D game");
+        window.setTitle("PacMan");
         window.setVisible(true);
         Map map = new Map();
         window.add(map);
         window.pack();
         map.startGameThread();
+        try {
+            map.gameThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        window.dispose();
     }
 }

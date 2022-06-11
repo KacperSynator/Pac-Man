@@ -185,4 +185,23 @@ public class Map extends JPanel implements Runnable {
         spawnGhosts();
         start_delay_timer.start();
     }
+
+    void resetGame() {
+        start_delay_timer.stop();
+        this.update = false;
+        game_over = false;
+        for (var ghost : ghosts) ghost.stopGhostThread();
+        lives = 3;
+        score = 0;
+        pacman = new Pacman(this,this.keys);
+        ghosts.clear();
+        spawnGhosts();
+        spawnTreats();
+        start_delay_timer.start();
+    }
+
+    void quit() {
+        for (var ghost : ghosts) ghost.stopGhostThread();
+        this.gameThread = null;
+    }
 }
