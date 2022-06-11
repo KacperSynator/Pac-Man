@@ -4,29 +4,47 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.lang.Math;
 import javax.swing.Timer;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 
+/**
+ * class implementing ghosts that chase pacman
+ */
 public class Ghost extends MovingEntity implements Runnable {
+    /**
+     * enum of ghost personality
+     * BLINKY - always chase pacman <br>
+     * PINKY - tries to ambush pacman <br>
+     * INKY - whimsical strategy of chase <br>
+     * CLYDE - randomly mimics other ghosts
+     */
     public enum Personality {BLINKY, INKY, PINKY, CLYDE}
+    /**
+     * enum of movment modes of ghosts: <br>
+     * CHASE -> chase pacman <br>
+     * SCATTER -> move to corner <br>
+     */
     public enum MovementMode {CHASE, SCATTER}
+
+    /** movement mode of ghost */
     static MovementMode movement_mode = MovementMode.SCATTER;
+    /** mimic personality of CLYDE */
     static Personality mimic_personality = Personality.BLINKY;
+    /** time in ms between ghosts movement mode change */
     static final int MOVEMENT_MODE_DELAY = 5000;
+    /** time in ms between CLYDE mimic personality change */
     static final int MIMIC_MODE_DELAY = 3000;
+    /** thread of thoe ghost */
     Thread ghost_thread;
+    /** personality of ghost */
     Personality personality;
+    /** timer which changes movement mode after specified time interval */
     static public Timer movement_mode_timer = new Timer(MOVEMENT_MODE_DELAY, e -> {
         switch (movement_mode) {
             case SCATTER -> movement_mode = MovementMode.CHASE;
             case CHASE -> movement_mode = MovementMode.SCATTER;
         }
     });
-
+    /** timer which changes CLYDE mimic personality after specified time interval */
     static public Timer mimic_mode_timer = new Timer(MIMIC_MODE_DELAY, e -> {
         switch (mimic_personality) {
             case BLINKY -> mimic_personality = Personality.INKY;
@@ -35,25 +53,34 @@ public class Ghost extends MovingEntity implements Runnable {
         }
     });
 
-
-
-    public Ghost(Map map, Personality personality) {
-        this.map = map;
+    /**
+     * constructor that takes game_panel object and ghost personality
+     * @param game_panel game_panel object
+     * @param personality ghost's personality
+     */
+    public Ghost(GamePanel game_panel, Personality personality) {
+        this.game_panel = game_panel;
         this.personality = personality;
         this.move_direction = ControlPanel.MoveDirection.UP;
         this.getGhostImage();
         this.setPostion();
     }
 
+    /**
+     * set starting position depending on personality
+     */
     void setPostion() {
         switch (personality) {
-            case BLINKY -> position = new Point(12 * Map.PIXEL, 6 * Map.PIXEL);
-            case INKY -> position = new Point(13 * Map.PIXEL, 6 * Map.PIXEL);
-            case CLYDE -> position = new Point(14 * Map.PIXEL, 6 * Map.PIXEL);
-            case PINKY -> position = new Point(11 * Map.PIXEL, 6 * Map.PIXEL);
+            case BLINKY -> position = new Point(12 * GamePanel.PIXEL, 6 * GamePanel.PIXEL);
+            case INKY -> position = new Point(13 * GamePanel.PIXEL, 6 * GamePanel.PIXEL);
+            case CLYDE -> position = new Point(14 * GamePanel.PIXEL, 6 * GamePanel.PIXEL);
+            case PINKY -> position = new Point(11 * GamePanel.PIXEL, 6 * GamePanel.PIXEL);
         }
     }
 
+    /**
+     * loads ghost images depending on personality
+     */
     void getGhostImage() {
         try {
             switch (personality) {
@@ -79,15 +106,24 @@ public class Ghost extends MovingEntity implements Runnable {
         }
     }
 
+    /**
+     * starts ghost thread
+     */
     public void startGhostThread() {
         this.ghost_thread = new Thread(this);
         this.ghost_thread.start();
     }
 
+    /**
+     * stops ghost thread
+     */
     public void stopGhostThread() {
         this.ghost_thread = null;
     }
 
+    /**
+     * thread run function, updates ghost status and limits frames to 60
+     */
     public void run() {
         double drawInterval = 1.6666666E7;  // set max 60 fps
         double delta = 0.0;
@@ -98,16 +134,15 @@ public class Ghost extends MovingEntity implements Runnable {
             delta += (double)(currentTime - lastTime) / drawInterval;
             lastTime = currentTime;
             if (delta >= 1.0) {
-                if (map.update) this.update();
+                if (game_panel.update) this.update();
                 --delta;
             }
         }
     }
 
-    double calculateDistance(Point a, Point b) {
-        return Math.sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y));
-    }
-
+    /**
+     * scatter ghost movement mode depending on personality
+     */
     void scatter() {
         switch (personality) {
             case INKY -> moveToTile(new Point(24, 0));
@@ -117,10 +152,14 @@ public class Ghost extends MovingEntity implements Runnable {
         }
     }
 
+    /**
+     * calculates ambush tile for PINKY chase mode
+     * @return tile
+     */
     Point calculateAmbushTile() {
         final int tiles_ahead = 2;
-        var target_tile = map.pacman.getCenterTile();
-        switch (map.pacman.move_direction) {
+        var target_tile = game_panel.pacman.getCenterTile();
+        switch (game_panel.pacman.move_direction) {
             case UP -> target_tile.y -= tiles_ahead;
             case DOWN -> target_tile.y += tiles_ahead;
             case RIGHT -> target_tile.x += tiles_ahead;
@@ -129,22 +168,24 @@ public class Ghost extends MovingEntity implements Runnable {
         return target_tile;
     }
 
-    void ambushPacman() {
-        moveToTile(calculateAmbushTile());
-    }
-
+    /**
+     * chooses CLYDE mimic personality
+     */
     void mimicOther() {
         switch (mimic_personality) {
-            case BLINKY -> moveToTile(map.pacman.getCenterTile());
-            case PINKY -> ambushPacman();
+            case BLINKY -> moveToTile(game_panel.pacman.getCenterTile());
+            case PINKY -> moveToTile(calculateAmbushTile());
             case INKY -> whimsicalStrategy();
         }
     }
 
+    /**
+     * whimsical strategy for INKY chase mode
+     */
     void whimsicalStrategy() {
         var ambush_tile = calculateAmbushTile();
         Point blinky_tile = null;
-        for (var ghost : map.ghosts)
+        for (var ghost : game_panel.ghosts)
             if (ghost.personality == Personality.BLINKY)
                 blinky_tile = ghost.getCenterTile();
 
@@ -152,15 +193,21 @@ public class Ghost extends MovingEntity implements Runnable {
         moveToTile(target_tile);
     }
 
+    /**
+     * chooses chase strategy depending on personality
+     */
     void chase() {
         switch (personality) {
-            case BLINKY -> moveToTile(map.pacman.getCenterTile());
-            case PINKY -> ambushPacman();
+            case BLINKY -> moveToTile(game_panel.pacman.getCenterTile());
+            case PINKY -> moveToTile(calculateAmbushTile());
             case INKY -> whimsicalStrategy();
             case CLYDE -> mimicOther();
         }
     }
 
+    /**
+     * changes movement modes of ghosts
+     */
     void updateMoveDirection() {
         switch (movement_mode) {
             case SCATTER -> scatter();
@@ -168,16 +215,11 @@ public class Ghost extends MovingEntity implements Runnable {
         }
     }
 
-    void removeBackDir(List<ControlPanel.MoveDirection> dirs) {
-        if (dirs.size() == 1) return;
-        switch (move_direction) {
-            case UP -> dirs.remove(ControlPanel.MoveDirection.DOWN);
-            case DOWN -> dirs.remove(ControlPanel.MoveDirection.UP);
-            case RIGHT -> dirs.remove(ControlPanel.MoveDirection.LEFT);
-            case LEFT -> dirs.remove(ControlPanel.MoveDirection.RIGHT);
-        }
-    }
-
+    /**
+     * calculates next tile where ghost will be moved depending on target tile. Next move tile is chosen as minimal
+     * euclidean distance between target tile and every possible next move tile.
+     * @param tile target tile
+     */
     void moveToTile(Point tile) {
         Point current_pos = getCenterTile();
         var dirs =  getPossibleMoveDirections(getCenterTile());
@@ -192,7 +234,7 @@ public class Ghost extends MovingEntity implements Runnable {
                 case LEFT -> next_tile.x -= 1;
                 case RIGHT -> next_tile.x += 1;
             }
-            var dist = calculateDistance(tile, next_tile);
+            var dist = Point.calculateDistance(tile, next_tile);
             if (min_dist >= dist) {
                 min_dist = dist;
                 best_dir = dir;
@@ -201,6 +243,9 @@ public class Ghost extends MovingEntity implements Runnable {
         if (best_dir != null)  move_direction = best_dir;
     }
 
+    /**
+     * updates ghost in every frame
+     */
     public void update() {
         if (isInCenter()) updateMoveDirection();
 
@@ -222,6 +267,10 @@ public class Ghost extends MovingEntity implements Runnable {
         }
     }
 
+    /**
+     * draws ghost in game window
+     * @param element2d Graphics2D from java.awt.Graphics
+     */
     public void draw(Graphics2D element2d) {
         BufferedImage image = null;
 
@@ -230,6 +279,6 @@ public class Ghost extends MovingEntity implements Runnable {
             case 1 -> image = this.frame2;
         }
 
-        element2d.drawImage(image, this.position.x, this.position.y, Map.PIXEL, Map.PIXEL, null);
+        element2d.drawImage(image, this.position.x, this.position.y, GamePanel.PIXEL, GamePanel.PIXEL, null);
     }
 }

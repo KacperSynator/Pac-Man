@@ -7,11 +7,16 @@ package Main;
 
 import java.awt.image.BufferedImage;
 
+/**
+ * class implementing single Tile of the game map
+ */
 public class Tile {
+    /** image of tile */
     public BufferedImage img;
-    public boolean collision = true;
 
-    public Tile(BufferedImage img_) {
-        img = img_;
-    }
+    /**
+     * constructor
+     * @param img_ tile image
+     */
+    public Tile(BufferedImage img_) { img = img_; }
 }

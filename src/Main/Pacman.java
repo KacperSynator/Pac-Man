@@ -6,14 +6,15 @@
 package Main;
 
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import javax.imageio.ImageIO;
 
+/**
+ * implementation of player controlled Pacman
+ */
 public class Pacman extends MovingEntity {
+    /** user input reader */
     ControlPanel keys;
     public BufferedImage frame1up;
     public BufferedImage frame2up;
@@ -24,14 +25,22 @@ public class Pacman extends MovingEntity {
     public BufferedImage frame1left;
     public BufferedImage frame2left;
 
-    public Pacman(Map map, ControlPanel keys) {
+    /**
+     * constructor
+     * @param game_panel game_panel object
+     * @param keys ControlPanel object
+     */
+    public Pacman(GamePanel game_panel, ControlPanel keys) {
         this.keys = keys;
-        this.map = map;
+        this.game_panel = game_panel;
         this.move_direction = ControlPanel.MoveDirection.LEFT;
-        this.position = new Point(12 * Map.PIXEL, 11 * Map.PIXEL);
+        this.position = new Point(12 * GamePanel.PIXEL, 11 * GamePanel.PIXEL);
         this.getPacmanImage();
     }
 
+    /**
+     * loads pacman frames from files
+     */
     public void getPacmanImage() {
         try {
             frame1up = ImageIO.read(this.getClass().getResourceAsStream("../pacman/pacman_up_1.png"));
@@ -47,7 +56,9 @@ public class Pacman extends MovingEntity {
         }
     }
 
-
+    /**
+     * update of pacman in every game iteration, that changes frames and movement of pacman.
+     */
     public void update() {
 
         var dirs =  getPossibleMoveDirections(getCenterTile());
@@ -76,6 +87,10 @@ public class Pacman extends MovingEntity {
         }
     }
 
+    /**
+     * draws pacman in game window
+     * @param element2d Graphics2D from java.awt.Graphics
+     */
     public void draw(Graphics2D element2d) {
         BufferedImage image = null;
 
@@ -105,6 +120,6 @@ public class Pacman extends MovingEntity {
                 }
             }
         }
-        element2d.drawImage(image, this.position.x, this.position.y, Map.PIXEL, Map.PIXEL, null);
+        element2d.drawImage(image, this.position.x, this.position.y, GamePanel.PIXEL, GamePanel.PIXEL, null);
     }
 }

@@ -5,51 +5,66 @@
 
 package Main;
 
-import java.awt.*;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.lang.reflect.Array;
-import java.util.Arrays;
-import javax.imageio.ImageIO;
 import javax.swing.*;
 
 import java.util.List;
 import java.util.ArrayList;
 
-public class Map extends JPanel implements Runnable {
+/**
+ * implements main game loop, handles all game events
+ */
+public class GamePanel extends JPanel implements Runnable {
+    /** size of single tile in pixels */
     public static final int PIXEL = 64;
+    /** screen height in pixels */
     public static final int SCREEN_HEIGHT = 960;
+    /** screen height in pixels */
     public static final int SCREEN_WIDTH = 1600;
+    /** score of eaten treat */
     static final int TREAT_SCORE = 10;
+    /** time in ms of game start delay */
     static final int START_DELAY = 2000;
+    /** flag that indicates if game objects should be updated in loop */
     public boolean update = false;
+    /** flag that indicates game over state */
     public boolean game_over = false;
+    /** user input handler */
     ControlPanel keys = new ControlPanel();
-    Font font;
+    /** thread object */
     Thread gameThread;
+    /** game map */
     TileManager tileManager = new TileManager(this);
+    /** map of treats */
     Treat[][] treat_map;
+    /** list of ghosts */
     List<Ghost> ghosts;
+    /** pacman object */
     Pacman pacman;
+    /** current game score */
     int score = 0;
+    /** number of existing treats */
     int treat_amount = 0;
+    /** number of remaining lives */
     int lives = 3;
+    /** user interface object */
     UserInterface user_interface = new UserInterface(this);
-
+    /** start delay timer */
     public Timer start_delay_timer = new Timer(START_DELAY, e -> update = true);
-
+    /** @return tile map layout */
     public int[][] getTileMap() { return tileManager.getMapLayout(); }
 
-    public Map() {
+    /**
+     * constructor
+     */
+    public GamePanel() {
         this.pacman = new Pacman(this, this.keys);
         this.spawnGhosts();
         this.spawnTreats();
-        this.loadFont();
-        this.setPreferredSize(new Dimension(Map.SCREEN_WIDTH, Map.SCREEN_HEIGHT));
+        this.setPreferredSize(new Dimension(GamePanel.SCREEN_WIDTH, GamePanel.SCREEN_HEIGHT));
         this.setBackground(Color.BLACK);
         this.setDoubleBuffered(true);
         this.addKeyListener(this.keys);
@@ -57,16 +72,9 @@ public class Map extends JPanel implements Runnable {
         this.requestFocusInWindow();
     }
 
-    void loadFont() {
-        try {
-            // "../assets/fonts/android-insomnia/and_ins_reg.ttf" // "../assets/fonts/games/Games.ttf"
-            font = Font.createFont(Font.TRUETYPE_FONT, this.getClass().getResourceAsStream("../fonts/games/Games.ttf"));
-            font = font.deriveFont(36.0f);
-        } catch (Exception var2) {
-            var2.printStackTrace();
-        }
-    }
-
+    /**
+     * creates ghosts
+     */
     void spawnGhosts() {
         ghosts = new ArrayList<>();
         ghosts.add( new Ghost(this, Ghost.Personality.BLINKY));
@@ -80,11 +88,15 @@ public class Map extends JPanel implements Runnable {
         }
     }
 
+    /**
+     * creates treats on map
+     */
     void spawnTreats() {
         var tile_map = tileManager.getMapLayout();
-        treat_map = new Treat[Map.SCREEN_HEIGHT / Map.PIXEL][Map.SCREEN_WIDTH / Map.PIXEL];
-        for (int i = 0; i < Map.SCREEN_HEIGHT / Map.PIXEL; ++i) {
-            for (int j = 0; j < Map.SCREEN_WIDTH / Map.PIXEL; ++j) {
+        treat_amount = 0;
+        treat_map = new Treat[GamePanel.SCREEN_HEIGHT / GamePanel.PIXEL][GamePanel.SCREEN_WIDTH / GamePanel.PIXEL];
+        for (int i = 0; i < GamePanel.SCREEN_HEIGHT / GamePanel.PIXEL; ++i) {
+            for (int j = 0; j < GamePanel.SCREEN_WIDTH / GamePanel.PIXEL; ++j) {
                 if (tile_map[i][j] == 0) {
                     treat_map[i][j] = new Treat(this, new Point(j * PIXEL, i * PIXEL));
                     treat_amount++;
@@ -93,12 +105,18 @@ public class Map extends JPanel implements Runnable {
         }
     }
 
+    /**
+     * starts game thread
+     */
     public void startGameThread() {
         this.gameThread = new Thread(this);
         this.gameThread.start();
 
     }
 
+    /**
+     * thread main function that updates and paints game objects. Frame rate set to 60 fps.
+     */
     public void run() {
         double drawInterval = 1.6666666E7;  // set max 60 fps
         double delta = 0.0;
@@ -119,6 +137,9 @@ public class Map extends JPanel implements Runnable {
         }
     }
 
+    /**
+     * updates objects, checks for collisions and checks win condition
+     */
     public void update() {
         this.pacman.update();
         this.eatTreat();
@@ -126,6 +147,9 @@ public class Map extends JPanel implements Runnable {
         if (checkCollision())  resetMap();
     }
 
+    /**
+     * handles treats eating and score updating
+     */
     void eatTreat() {
         var pacman_tile = pacman.getCenterTile();
         if (treat_map[pacman_tile.y][pacman_tile.x] != null) {
@@ -135,6 +159,10 @@ public class Map extends JPanel implements Runnable {
         }
     }
 
+    /**
+     * checks for ghost pacman collisions
+     * @return true if collision otherwise false
+     */
     boolean checkCollision() {
         for (var ghost : ghosts) {
             if (ghost.getCenterTile().x == pacman.getCenterTile().x && ghost.getCenterTile().y == pacman.getCenterTile().y) {
@@ -144,6 +172,10 @@ public class Map extends JPanel implements Runnable {
         return false;
     }
 
+    /**
+     * draws elements in game window
+     * @param element the <code>Graphics</code> object to protect
+     */
     public void paintComponent(Graphics element) {
         super.paintComponent(element);
         Graphics2D element2d = (Graphics2D)element;
@@ -156,15 +188,23 @@ public class Map extends JPanel implements Runnable {
         element2d.dispose();
     }
 
+    /**
+     * draws ghosts in game window
+     * @param element2d Graphics2D from java.awt.Graphics
+     */
     void paintGhosts(Graphics2D element2d) {
         for (var ghost : ghosts) {
             ghost.draw(element2d);
         }
     }
 
+    /**
+     * draws treats in game window
+     * @param element2d Graphics2D from java.awt.Graphics
+     */
     void paintTreats(Graphics2D element2d) {
-        for (int i = 0; i < Map.SCREEN_HEIGHT / Map.PIXEL; ++i) {
-            for (int j = 0; j < Map.SCREEN_WIDTH / Map.PIXEL; ++j) {
+        for (int i = 0; i < GamePanel.SCREEN_HEIGHT / GamePanel.PIXEL; ++i) {
+            for (int j = 0; j < GamePanel.SCREEN_WIDTH / GamePanel.PIXEL; ++j) {
                 if (treat_map[i][j] != null) {
                     treat_map[i][j].draw(element2d);
                 }
@@ -172,6 +212,9 @@ public class Map extends JPanel implements Runnable {
         }
     }
 
+    /**
+     * resets ghosts and pacman position, handles lives. When 0 lives remaining sets game over flag.
+     */
     void resetMap() {
         start_delay_timer.stop();
         this.update = false;
@@ -186,6 +229,9 @@ public class Map extends JPanel implements Runnable {
         start_delay_timer.start();
     }
 
+    /**
+     * resets ghosts, and pacman position, lives, score and treats
+     */
     void resetGame() {
         start_delay_timer.stop();
         this.update = false;
@@ -200,6 +246,9 @@ public class Map extends JPanel implements Runnable {
         start_delay_timer.start();
     }
 
+    /**
+     * quit the game
+     */
     void quit() {
         for (var ghost : ghosts) ghost.stopGhostThread();
         this.gameThread = null;

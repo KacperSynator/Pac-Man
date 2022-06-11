@@ -5,27 +5,50 @@
 
 package Main;
 
-import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
-import Main.Point;
 
+/**
+ * class implementing game entity
+ */
 public class Entity {
-    Map map;
+    /** game panel object */
+    GamePanel game_panel;
+    /** position of entity in pixels */
     public Point position = new Point();
+    /** first frame image */
     public BufferedImage frame1;
+    /** second frame image */
     public BufferedImage frame2;
+    /** frame counter used to change animation frames */
     int frameCounter = 0;
+    /** counter for counting frames */
     int counter = 0;
 
-    public Entity() {
+    /**
+     * get center of entity
+     * @return tile
+     */
+    public Point getCenter() { return new Point(position.x + GamePanel.PIXEL / 2, position.y + GamePanel.PIXEL / 2); }
+
+    /**
+     * get tile of top left point
+     * @return tile
+     */
+    public Point getTile() { return new Point(position.x / GamePanel.PIXEL, position.y / GamePanel.PIXEL); }
+
+    /**
+     * get tile of the center of enitiy
+     * @return tile
+     */
+    public Point getCenterTile() {
+        return new Point((position.x + GamePanel.PIXEL / 2) / GamePanel.PIXEL, (position.y + GamePanel.PIXEL / 2) / GamePanel.PIXEL);
     }
 
-    public Point getCenter() { return new Point(position.x + Map.PIXEL / 2, position.y + Map.PIXEL / 2); }
-    public Point getTile() { return new Point(position.x / Map.PIXEL, position.y / Map.PIXEL); }
-    public Point getCenterTile() {
-        return new Point((position.x + Map.PIXEL / 2) / Map.PIXEL, (position.y + Map.PIXEL / 2) / Map.PIXEL);
-    }
+    /**
+     * checks if entity is in the middle of tile
+     * @return true if is in the middle of tile otherwise false
+     */
     public boolean isInCenter() {
         var center = getCenter();
         return (center.x % 32 == 0 && center.x % 64 != 0) && (center.y % 32 == 0 && center.y % 64 != 0);

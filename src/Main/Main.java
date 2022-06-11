@@ -7,17 +7,21 @@ package Main;
 
 import javax.swing.*;
 
-public class Main {
-    public Main() {
-    }
 
+/**
+ * main class, that starts the game
+ */
+public class Main {
+    /**
+     * main function
+     */
     public static void main(String[] args) {
         JFrame window = new JFrame();
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         window.setResizable(false);
         window.setTitle("PacMan");
         window.setVisible(true);
-        Map map = new Map();
+        GamePanel map = new GamePanel();
         window.add(map);
         window.pack();
         map.startGameThread();
