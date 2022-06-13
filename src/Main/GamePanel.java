@@ -229,6 +229,7 @@ public class GamePanel extends JPanel implements Runnable {
      */
     void nextLevel() {
         lives = 3;
+        this.level_completed = false;
         pacman = new Pacman(this,this.keys);
         ghosts.clear();
         spawnGhosts();
