@@ -32,6 +32,8 @@ public class GamePanel extends JPanel implements Runnable {
     public boolean update = false;
     /** flag that indicates game over state */
     public boolean game_over = false;
+    /** flag that indicates level completed state */
+    public boolean level_completed = false;
     /** user input handler */
     ControlPanel keys = new ControlPanel();
     /** thread object */
@@ -111,7 +113,6 @@ public class GamePanel extends JPanel implements Runnable {
     public void startGameThread() {
         this.gameThread = new Thread(this);
         this.gameThread.start();
-
     }
 
     /**
@@ -143,7 +144,7 @@ public class GamePanel extends JPanel implements Runnable {
     public void update() {
         this.pacman.update();
         this.eatTreat();
-        if (treat_amount == 0) System.out.println("Game Won");
+        if (treat_amount == 0) levelCompleted();
         if (checkCollision())  resetMap();
     }
 
@@ -185,6 +186,7 @@ public class GamePanel extends JPanel implements Runnable {
         this.paintGhosts(element2d);
         this.user_interface.paintInterfaceInGame(element2d);
         if (game_over) user_interface.gameOverScreen(element2d);
+        if (level_completed) user_interface.winScreen(element2d);
         element2d.dispose();
     }
 
@@ -213,12 +215,35 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     /**
+     * set printing level completed window, pause game
+     */
+    void levelCompleted() {
+        start_delay_timer.stop();
+        this.update = false;
+        this.level_completed = true;
+        for (var ghost : ghosts) ghost.stopGhostThread();
+    }
+
+    /**
+     * start next level, invoke after levelCompleted()
+     */
+    void nextLevel() {
+        lives = 3;
+        pacman = new Pacman(this,this.keys);
+        ghosts.clear();
+        spawnGhosts();
+        spawnTreats();
+        start_delay_timer.start();
+    }
+
+    /**
      * resets ghosts and pacman position, handles lives. When 0 lives remaining sets game over flag.
      */
     void resetMap() {
         start_delay_timer.stop();
         this.update = false;
         for (var ghost : ghosts) ghost.stopGhostThread();
+        ghosts.clear();
         if (--lives <= 0) {
             game_over = true;
             return;

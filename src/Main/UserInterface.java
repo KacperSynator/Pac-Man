@@ -18,10 +18,14 @@ public class UserInterface extends JPanel {
     JButton reset = new JButton("RESET");
     /** button for quiting the game */
     JButton quit = new JButton("QUIT");
+    /** button for starting next game level */
+    JButton next = new JButton("NEXT");
     /** game_panel object */
     GamePanel game_panel;
     /** gif displayed in game over window */
     Image game_over_gif;
+    /** gif displayed in win window */
+    Image win_gif;
     /** font for "GAME OVER" text */
     Font game_over_font;
     /** font for buttons' text */
@@ -34,6 +38,7 @@ public class UserInterface extends JPanel {
     UserInterface(GamePanel game_panel) {
         this.game_panel = game_panel;
         game_over_gif = Toolkit.getDefaultToolkit().createImage(System.getProperty("user.dir") + "/src/assets/userInterface/game_over.gif");
+        win_gif = Toolkit.getDefaultToolkit().createImage(System.getProperty("user.dir") + "/src/assets/userInterface/win_screen.gif");
         loadFont();
         createButtons();
         try {
@@ -66,6 +71,12 @@ public class UserInterface extends JPanel {
         reset.setForeground(Color.WHITE);
         reset.addActionListener(e -> game_panel.resetGame());
         game_panel.add(reset);
+
+        next.setFont(buttons_font);
+        next.setBackground(Color.BLACK);
+        next.setForeground(Color.WHITE);
+        next.addActionListener(e -> game_panel.nextLevel());
+        game_panel.add(next);
 
         quit.setFont(buttons_font);
         quit.setBackground(Color.BLACK);
@@ -111,5 +122,29 @@ public class UserInterface extends JPanel {
                     GamePanel.SCREEN_WIDTH / 7, GamePanel.SCREEN_HEIGHT / 15);
         reset.repaint();
         quit.repaint();
+    }
+
+    /**
+     * draws win window
+     * @param element2d Graphics2D from java.awt.Graphics
+     */
+    void winScreen(Graphics2D element2d) {
+        super.paintComponent(element2d);
+        element2d.setColor(Color.BLACK);
+        element2d.fillRect(GamePanel.SCREEN_WIDTH / 4 - WINDOW_BORDER, GamePanel.SCREEN_HEIGHT / 4 - WINDOW_BORDER,
+                GamePanel.SCREEN_WIDTH / 2 + 2 * WINDOW_BORDER, GamePanel.SCREEN_HEIGHT / 2 + 2 * WINDOW_BORDER);
+        element2d.setColor(Color.WHITE);
+        element2d.drawImage(win_gif, GamePanel.SCREEN_WIDTH / 4, GamePanel.SCREEN_HEIGHT / 4,
+                GamePanel.SCREEN_WIDTH / 2, GamePanel.SCREEN_HEIGHT / 2 ,null);
+        element2d.setFont(game_over_font);
+        element2d.drawString("LEVEL COMPLETED", GamePanel.SCREEN_WIDTH / 2 - 310, GamePanel.SCREEN_HEIGHT / 2 + 230);
+
+        next.setBounds(GamePanel.SCREEN_WIDTH / 4 + WINDOW_BORDER, GamePanel.SCREEN_HEIGHT / 4 + GamePanel.SCREEN_HEIGHT / 2 + 2 * WINDOW_BORDER,
+                GamePanel.SCREEN_WIDTH / 7, GamePanel.SCREEN_HEIGHT / 15);
+        quit.setBounds(GamePanel.SCREEN_WIDTH / 4 + WINDOW_BORDER + 2 * GamePanel.SCREEN_WIDTH / 7, GamePanel.SCREEN_HEIGHT / 4 + GamePanel.SCREEN_HEIGHT / 2 + 2 * WINDOW_BORDER,
+                GamePanel.SCREEN_WIDTH / 7, GamePanel.SCREEN_HEIGHT / 15);
+        next.repaint();
+        quit.repaint();
+
     }
 }
