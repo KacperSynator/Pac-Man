@@ -8,7 +8,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Scanner;
+import java.lang.reflect.Array;
+import java.util.*;
+import java.util.List;
+import javax.swing.JScrollPane;
 
 /**
  * class implementing user interface, extends JPanel
@@ -34,6 +37,8 @@ public class UserInterface extends JPanel {
     Font game_over_font;
     /** font for buttons' text */
     Font buttons_font;
+    /** scoreboard displayed at game over screen */
+    ScrollPane scoreboard = new ScrollPane();
 
     /**
      * constructor, loads gif and fonts from file
@@ -97,8 +102,7 @@ public class UserInterface extends JPanel {
         element2d.setColor(Color.white);
         element2d.setFont(buttons_font);
         element2d.drawString("Score: " + game_panel.score, 1370, 935);
-        for(int i=0;i<game_panel.lives;i++)
-        {
+        for(int i=0;i<game_panel.lives;i++) {
             element2d.drawImage(heart, 1260+i* GamePanel.PIXEL/2, 910, GamePanel.PIXEL/2, GamePanel.PIXEL/2, null);
         }
     }
@@ -106,31 +110,64 @@ public class UserInterface extends JPanel {
     /**
      * adds score to text file
      */
-
-    void AddScoreToScoreboard()
-    {
-        try{
+    void addScoreToScoreboard() {
+        try {
             FileWriter file_in;
             file_in = new FileWriter(System.getProperty("user.dir") + "/src/assets/userInterface/top_scores.txt",true);
             file_in.write(game_panel.score+"\n");
             file_in.close();
-        } catch (IOException var2){
+        } catch (IOException var2) {
             var2.printStackTrace();
         }
     }
 
+    /**
+     * loads scoreboard from file top_scores.txt
+     */
+    void loadScoreBoard() {
+        File file_out = new File(System.getProperty("user.dir") + "/src/assets/userInterface/top_scores.txt");
+        Scanner scanner;
+        try {
+            scanner = new Scanner(file_out);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return;
+        }
+        List<Integer> scores = new ArrayList<>();
+        while (scanner.hasNext()) {
+          scores.add(scanner.nextInt());
+        }
+        scores.sort(Collections.reverseOrder());
+        JList<Integer> jlist = new JList<>(scores.toArray(new Integer[scores.size()]));
+        jlist.setBackground(Color.BLACK);
+        jlist.setForeground(Color.WHITE);
+        jlist.setFont(buttons_font);
+        scoreboard.add(jlist);
+        game_panel.add(scoreboard);
+    }
+
+    /**
+     * draw gif with black background rectangle
+     * @param element2d Graphics2D from java.awt.Graphics
+     * @param gif loaded to image
+     */
+    void gifWithBackground(Graphics2D element2d, Image gif) {
+        element2d.setColor(Color.BLACK);
+        element2d.fillRect(GamePanel.SCREEN_WIDTH / 4 - WINDOW_BORDER, GamePanel.SCREEN_HEIGHT / 4 - WINDOW_BORDER,
+                GamePanel.SCREEN_WIDTH / 2 + 2 * WINDOW_BORDER, GamePanel.SCREEN_HEIGHT / 2 + 2 * WINDOW_BORDER);
+        element2d.setColor(Color.WHITE);
+        element2d.drawImage(gif, GamePanel.SCREEN_WIDTH / 4, GamePanel.SCREEN_HEIGHT / 4,
+                GamePanel.SCREEN_WIDTH / 2, GamePanel.SCREEN_HEIGHT / 2 ,null);
+    }
     /**
      * draws game over window
      * @param element2d Graphics2D from java.awt.Graphics
      */
     void gameOverScreen(Graphics2D element2d) {
         super.paintComponent(element2d);
-        element2d.setColor(Color.BLACK);
-        element2d.fillRect(GamePanel.SCREEN_WIDTH / 4 - WINDOW_BORDER, GamePanel.SCREEN_HEIGHT / 4 - WINDOW_BORDER,
-                        GamePanel.SCREEN_WIDTH / 2 + 2 * WINDOW_BORDER, GamePanel.SCREEN_HEIGHT / 2 + 2 * WINDOW_BORDER);
-        element2d.setColor(Color.WHITE);
-        element2d.drawImage(game_over_gif, GamePanel.SCREEN_WIDTH / 4, GamePanel.SCREEN_HEIGHT / 4,
-                      GamePanel.SCREEN_WIDTH / 2, GamePanel.SCREEN_HEIGHT / 2 ,null);
+
+        gifWithBackground(element2d, game_over_gif);
+
         element2d.setFont(buttons_font);
         element2d.drawString("YOUR SCORE: " + game_panel.score, GamePanel.SCREEN_WIDTH / 2 - 140, GamePanel.SCREEN_HEIGHT / 2 + 230);
         element2d.setFont(game_over_font);
@@ -142,6 +179,8 @@ public class UserInterface extends JPanel {
                     GamePanel.SCREEN_WIDTH / 7, GamePanel.SCREEN_HEIGHT / 15);
         reset.repaint();
         quit.repaint();
+
+        scoreboardScreen(element2d);
     }
 
     /**
@@ -150,12 +189,9 @@ public class UserInterface extends JPanel {
      */
     void winScreen(Graphics2D element2d) {
         super.paintComponent(element2d);
-        element2d.setColor(Color.BLACK);
-        element2d.fillRect(GamePanel.SCREEN_WIDTH / 4 - WINDOW_BORDER, GamePanel.SCREEN_HEIGHT / 4 - WINDOW_BORDER,
-                GamePanel.SCREEN_WIDTH / 2 + 2 * WINDOW_BORDER, GamePanel.SCREEN_HEIGHT / 2 + 2 * WINDOW_BORDER);
-        element2d.setColor(Color.WHITE);
-        element2d.drawImage(win_gif, GamePanel.SCREEN_WIDTH / 4, GamePanel.SCREEN_HEIGHT / 4,
-                GamePanel.SCREEN_WIDTH / 2, GamePanel.SCREEN_HEIGHT / 2 ,null);
+
+        gifWithBackground(element2d, win_gif);
+
         element2d.setFont(game_over_font);
         element2d.drawString("LEVEL COMPLETED", GamePanel.SCREEN_WIDTH / 2 - 310, GamePanel.SCREEN_HEIGHT / 2 + 230);
 
@@ -166,10 +202,19 @@ public class UserInterface extends JPanel {
         next.repaint();
         quit.repaint();
     }
-    void ScoreboardScreen(Graphics2D element2d) throws FileNotFoundException {
+
+    /**
+     * draws scoreboards loaded from file next to game over screen
+     * @param element2d Graphics2D from java.awt.Graphics
+     */
+    void scoreboardScreen(Graphics2D element2d) {
         super.paintComponent(element2d);
-        File file_out = new File(System.getProperty("user.dir") + "/src/assets/userInterface/top_scores.txt");
-        Scanner scan = new Scanner(file_out);
-        int[] score_list;
+
+        scoreboard.setBounds(GamePanel.SCREEN_WIDTH / 2 + 500, GamePanel.SCREEN_HEIGHT / 2 - 200,
+                GamePanel.SCREEN_WIDTH / 6, GamePanel.SCREEN_HEIGHT / 2);
+        element2d.setFont(game_over_font);
+        element2d.drawString("SCORES", GamePanel.SCREEN_WIDTH / 2 + 500, GamePanel.SCREEN_HEIGHT / 2 - 200);
+
+        scoreboard.repaint();
     }
 }
