@@ -247,6 +247,7 @@ public class GamePanel extends JPanel implements Runnable {
         ghosts.clear();
         if (--lives <= 0) {
             game_over = true;
+            user_interface.AddScoreToScoreboard();
             return;
         }
         pacman = new Pacman(this,this.keys);

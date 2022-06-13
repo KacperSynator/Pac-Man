@@ -4,7 +4,11 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Scanner;
 
 /**
  * class implementing user interface, extends JPanel
@@ -100,6 +104,22 @@ public class UserInterface extends JPanel {
     }
 
     /**
+     * adds score to text file
+     */
+
+    void AddScoreToScoreboard()
+    {
+        try{
+            FileWriter file_in;
+            file_in = new FileWriter(System.getProperty("user.dir") + "/src/assets/userInterface/top_scores.txt",true);
+            file_in.write(game_panel.score+"\n");
+            file_in.close();
+        } catch (IOException var2){
+            var2.printStackTrace();
+        }
+    }
+
+    /**
      * draws game over window
      * @param element2d Graphics2D from java.awt.Graphics
      */
@@ -145,6 +165,11 @@ public class UserInterface extends JPanel {
                 GamePanel.SCREEN_WIDTH / 7, GamePanel.SCREEN_HEIGHT / 15);
         next.repaint();
         quit.repaint();
-
+    }
+    void ScoreboardScreen(Graphics2D element2d) throws FileNotFoundException {
+        super.paintComponent(element2d);
+        File file_out = new File(System.getProperty("user.dir") + "/src/assets/userInterface/top_scores.txt");
+        Scanner scan = new Scanner(file_out);
+        int[] score_list;
     }
 }
